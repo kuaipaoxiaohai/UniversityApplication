@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Directory - Stanford & MIT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --background: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text: #f8fafc;
+            --text-secondary: #94a3b8;
+            --stanford: #8c1515;
+            --mit: #a31f34;
+            --border: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--surface) 0%, var(--background) 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 70% 50%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            position: relative;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            padding: 1.5rem 2rem;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Controls */
+        .controls {
+            padding: 1.5rem 2rem;
+            background: var(--surface);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+        }
+
+        .filter-btn {
+            padding: 0.75rem 1.25rem;
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--text);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* Faculty Grid */
+        .faculty-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Faculty Card */
+        .faculty-card {
+            background: var(--surface);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .faculty-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+        }
+
+        .faculty-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .faculty-card:hover::before {
+            opacity: 1;
+        }
+
+        .faculty-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text);
+        }
+
+        .faculty-title {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .faculty-school {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .school-stanford-cheme {
+            background: rgba(140, 21, 21, 0.2);
+            color: #f87171;
+        }
+
+        .school-stanford-mse {
+            background: rgba(140, 21, 21, 0.2);
+            color: #fb923c;
+        }
+
+        .school-stanford-doerr {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+        }
+
+        .school-mit-dmse {
+            background: rgba(163, 31, 52, 0.2);
+            color: #f472b6;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .contact-item a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .contact-item a:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+
+        .contact-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        .research-areas {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .research-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .research-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .research-tag {
+            display: inline-block;
+            padding: 0.3rem 0.75rem;
+            background: rgba(99, 102, 241, 0.15);
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            color: var(--primary);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 4rem;
+            color: var(--text-secondary);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* No results */
+        .no-results {
+            text-align: center;
+            padding: 4rem;
+            color: var(--text-secondary);
+            grid-column: 1 / -1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .stats-bar {
+                gap: 1rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .faculty-grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .filter-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <h1>🎓 Faculty Directory</h1>
+        <p>Stanford & MIT - Chemical Engineering, Materials Science, Sustainability</p>
+    </header>
+
+    <div class="stats-bar" id="statsBar">
+        <div class="stat-item">
+            <div class="stat-value" id="totalCount">-</div>
+            <div class="stat-label">Total Faculty</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="emailCount">-</div>
+            <div class="stat-label">With Email</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="phoneCount">-</div>
+            <div class="stat-label">With Phone</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="pubCount">-</div>
+            <div class="stat-label">With Publications</div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search by name, department, research...">
+        </div>
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="stanford-cheme">Stanford ChemE</button>
+        <button class="filter-btn" data-filter="stanford-mse">Stanford MSE</button>
+        <button class="filter-btn" data-filter="stanford-doerr">Doerr School</button>
+        <button class="filter-btn" data-filter="mit-dmse">MIT DMSE</button>
+    </div>
+
+    <main class="faculty-grid" id="facultyGrid">
+        <div class="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading faculty data...</p>
+        </div>
+    </main>
+
+    <script>
+        let facultyData = [];
+        let currentFilter = 'all';
+        let currentSearch = '';
+
+        // Determine school from department source
+        function getSchool(source) {
+            if (!source) return 'unknown';
+            if (source.includes('cheme.stanford')) return 'stanford-cheme';
+            if (source.includes('mse.stanford')) return 'stanford-mse';
+            if (source.includes('sustainability.stanford')) return 'stanford-doerr';
+            if (source.includes('mit.edu')) return 'mit-dmse';
+            return 'unknown';
+        }
+
+        function getSchoolLabel(school) {
+            const labels = {
+                'stanford-cheme': 'Stanford ChemE',
+                'stanford-mse': 'Stanford MSE',
+                'stanford-doerr': 'Doerr School',
+                'mit-dmse': 'MIT DMSE'
+            };
+            return labels[school] || 'Unknown';
+        }
+
+        // Research field translation mapping (English to Chinese)
+        const researchTranslations = {
+            // Materials Science
+            'materials science': '材料科学',
+            'materials': '材料',
+            'nanomaterials': '纳米材料',
+            'biomaterials': '生物材料',
+            'polymers': '聚合物',
+            'polymer': '聚合物',
+            'ceramics': '陶瓷',
+            'metals': '金属材料',
+            'composites': '复合材料',
+            'semiconductors': '半导体',
+            'thin films': '薄膜',
+            'crystals': '晶体',
+            'crystallography': '晶体学',
+            'metallurgy': '冶金学',
+
+            // Chemistry & ChemE
+            'chemical engineering': '化学工程',
+            'chemistry': '化学',
+            'catalysis': '催化',
+            'catalyst': '催化剂',
+            'electrochemistry': '电化学',
+            'organic chemistry': '有机化学',
+            'inorganic chemistry': '无机化学',
+            'physical chemistry': '物理化学',
+            'biochemistry': '生物化学',
+            'polymer chemistry': '高分子化学',
+            'surface chemistry': '表面化学',
+            'thermodynamics': '热力学',
+            'kinetics': '动力学',
+            'synthesis': '合成',
+            'spectroscopy': '光谱学',
+
+            // Energy
+            'energy': '能源',
+            'renewable energy': '可再生能源',
+            'solar energy': '太阳能',
+            'solar cells': '太阳能电池',
+            'batteries': '电池',
+            'battery': '电池',
+            'fuel cells': '燃料电池',
+            'hydrogen': '氢能',
+            'energy storage': '储能',
+            'photovoltaics': '光伏',
+            'clean energy': '清洁能源',
+
+            // Sustainability & Environment
+            'sustainability': '可持续发展',
+            'environment': '环境',
+            'environmental': '环境',
+            'climate': '气候',
+            'climate change': '气候变化',
+            'carbon': '碳',
+            'carbon capture': '碳捕获',
+            'water': '水资源',
+            'pollution': '污染',
+            'ecology': '生态学',
+            'ecosystem': '生态系统',
+            'conservation': '保护',
+            'biodiversity': '生物多样性',
+
+            // Physics & Engineering
+            'physics': '物理',
+            'optics': '光学',
+            'photonics': '光子学',
+            'electronics': '电子学',
+            'mechanical': '机械',
+            'thermal': '热学',
+            'fluid mechanics': '流体力学',
+            'transport': '传输',
+            'mechanics': '力学',
+            'dynamics': '动力学',
+
+            // Biology & Medicine
+            'biology': '生物学',
+            'bioengineering': '生物工程',
+            'biotechnology': '生物技术',
+            'drug delivery': '药物递送',
+            'tissue engineering': '组织工程',
+            'medical devices': '医疗器械',
+            'biophysics': '生物物理',
+            'protein': '蛋白质',
+            'cell': '细胞',
+            'molecular': '分子',
+
+            // Computation & Data
+            'computational': '计算',
+            'machine learning': '机器学习',
+            'artificial intelligence': 'AI',
+            'simulation': '模拟',
+            'modeling': '建模',
+            'data science': '数据科学',
+
+            // Other
+            'nanotechnology': '纳米技术',
+            'manufacturing': '制造',
+            'processing': '加工',
+            'characterization': '表征',
+            'microscopy': '显微技术',
+            'imaging': '成像',
+            'design': '设计',
+            'innovation': '创新',
+            'research': '研究'
+        };
+
+        // Translate research field to Chinese
+        function translateToChineseTag(text) {
+            if (!text) return '';
+            const lowerText = text.toLowerCase().trim();
+
+            // Direct match
+            if (researchTranslations[lowerText]) {
+                return researchTranslations[lowerText];
+            }
+
+            // Partial match - look for keywords in the text
+            for (const [eng, chi] of Object.entries(researchTranslations)) {
+                if (lowerText.includes(eng) || eng.includes(lowerText)) {
+                    return chi;
+                }
+            }
+
+            // No translation found, return original (truncated if too long)
+            return text.length > 20 ? text.substring(0, 18) + '...' : text;
+        }
+
+        // Extract research keywords from text (like publication titles)
+        function extractKeywordsFromText(text) {
+            if (!text) return [];
+            const lowerText = text.toLowerCase();
+            const found = new Set();
+
+            // Keyword to Chinese translation mapping
+            const keywordMap = {
+                // Materials
+                'nanomaterial': '纳米材料', 'nanoparticle': '纳米材料', 'nano': '纳米技术',
+                'polymer': '聚合物', 'biomaterial': '生物材料', 'semiconductor': '半导体',
+                'thin film': '薄膜', 'crystal': '晶体', 'alloy': '合金', 'ceramic': '陶瓷',
+                'graphene': '石墨烯', 'carbon nanotube': '碳纳米管', 'quantum dot': '量子点',
+                // Chemistry
+                'catalysis': '催化', 'catalyst': '催化', 'electrochemical': '电化学',
+                'photochemical': '光化学', 'synthesis': '合成', 'molecular': '分子科学',
+                'organic': '有机化学', 'inorganic': '无机化学', 'polymer chemistry': '高分子化学',
+                // Energy
+                'solar': '太阳能', 'battery': '电池', 'fuel cell': '燃料电池',
+                'photovoltaic': '光伏', 'energy storage': '储能', 'hydrogen': '氢能',
+                'renewable': '可再生能源', 'lithium': '锂电池', 'perovskite': '钙钛矿',
+                // Environment
+                'climate': '气候', 'carbon capture': '碳捕获', 'sustainability': '可持续发展',
+                'environmental': '环境', 'pollution': '污染治理', 'water treatment': '水处理',
+                'ecosystem': '生态系统', 'biodiversity': '生物多样性',
+                // Biology
+                'drug delivery': '药物递送', 'tissue': '组织工程', 'protein': '蛋白质',
+                'cell': '细胞', 'gene': '基因', 'biomedical': '生物医学', 'dna': 'DNA',
+                // Physics/Engineering
+                'optic': '光学', 'photonic': '光子学', 'electronic': '电子学',
+                'magnetic': '磁性材料', 'thermal': '热学', 'mechanical': '力学',
+                'transport': '传输', 'superconductor': '超导', 'ferroelectric': '铁电',
+                // Methods
+                'machine learning': '机器学习', 'computational': '计算模拟',
+                'simulation': '模拟', 'microscopy': '显微技术', 'spectroscopy': '光谱学',
+                'imaging': '成像技术', 'characterization': '表征'
+            };
+
+            for (const [key, chinese] of Object.entries(keywordMap)) {
+                if (lowerText.includes(key) && !found.has(chinese)) {
+                    found.add(chinese);
+                    if (found.size >= 4) break;
+                }
+            }
+
+            return Array.from(found);
+        }
+
+        // Get default research areas based on school/department
+        function getDefaultResearchAreas(school, title) {
+            const defaults = {
+                'stanford-cheme': ['化学工程', '材料科学', '催化', '能源'],
+                'stanford-mse': ['材料科学', '纳米材料', '电子材料', '力学'],
+                'stanford-doerr': ['可持续发展', '气候科学', '环境工程', '能源'],
+                'mit-dmse': ['材料科学', '纳米技术', '能源材料', '生物材料']
+            };
+            return defaults[school] || ['科学研究', '工程技术'];
+        }
+
+        // Create faculty card HTML
+        function createCard(faculty) {
+            const school = getSchool(faculty.department_source);
+            const schoolLabel = getSchoolLabel(school);
+
+            let contactHtml = '';
+            if (faculty.email) {
+                contactHtml += `
+                    <div class="contact-item">
+                        <span class="contact-icon">📧</span>
+                        <a href="mailto:${faculty.email}">${faculty.email}</a>
+                    </div>`;
+            }
+            if (faculty.phone) {
+                contactHtml += `
+                    <div class="contact-item">
+                        <span class="contact-icon">📞</span>
+                        <a href="tel:${faculty.phone}">${faculty.phone}</a>
+                    </div>`;
+            }
+            if (faculty.assistant_email) {
+                contactHtml += `
+                    <div class="contact-item">
+                        <span class="contact-icon">👤</span>
+                        <span>Assistant: <a href="mailto:${faculty.assistant_email}">${faculty.assistant_email}</a></span>
+                    </div>`;
+            }
+            if (faculty.lab_website) {
+                const labUrl = faculty.lab_website.startsWith('http') ? faculty.lab_website : 'https://' + faculty.lab_website;
+                contactHtml += `
+                    <div class="contact-item">
+                        <span class="contact-icon">🔬</span>
+                        <a href="${labUrl}" target="_blank">Lab Website</a>
+                    </div>`;
+            }
+            if (faculty.google_scholar) {
+                contactHtml += `
+                    <div class="contact-item">
+                        <span class="contact-icon">📚</span>
+                        <a href="${faculty.google_scholar}" target="_blank">Google Scholar</a>
+                    </div>`;
+            }
+            if (faculty.profile_url) {
+                contactHtml += `
+                    <div class="contact-item">
+                        <span class="contact-icon">🔗</span>
+                        <a href="${faculty.profile_url}" target="_blank">Profile Page</a>
+                    </div>`;
+            }
+
+            let researchHtml = '';
+            // Extract research interests from multiple sources
+            let interests = [];
+
+            // First try: use research_interests from data
+            if (faculty.research_interests && Array.isArray(faculty.research_interests) && faculty.research_interests.length > 0) {
+                interests = faculty.research_interests.map(i => translateToChineseTag(i));
+            }
+
+            // Second try: extract keywords from publications
+            if (interests.length === 0 && faculty.top_publications && faculty.top_publications.length > 0) {
+                const pubs = Array.isArray(faculty.top_publications)
+                    ? faculty.top_publications.join(' ')
+                    : faculty.top_publications;
+                interests = extractKeywordsFromText(pubs);
+            }
+
+            // Third try: infer from department/school
+            if (interests.length === 0) {
+                const school = getSchool(faculty.department_source);
+                interests = getDefaultResearchAreas(school, faculty.title);
+            }
+
+            if (interests.length > 0) {
+                researchHtml = `
+                    <div class="research-areas">
+                        <div class="research-title">🔬 研究方向</div>
+                        <div class="research-tags">
+                            ${interests.slice(0, 4).map(i => `<span class="research-tag">${i}</span>`).join('')}
+                        </div>
+                    </div>`;
+            }
+
+            return `
+                <article class="faculty-card" data-school="${school}">
+                    <h3 class="faculty-name">${faculty.name || 'Unknown'}</h3>
+                    <div class="faculty-title">${faculty.title || ''}</div>
+                    <span class="faculty-school school-${school}">${schoolLabel}</span>
+                    ${contactHtml ? `<div class="contact-info">${contactHtml}</div>` : ''}
+                    ${researchHtml}
+                </article>
+            `;
+        }
+
+        // Render faculty cards
+        function renderFaculty() {
+            const grid = document.getElementById('facultyGrid');
+
+            let filtered = facultyData.filter(f => {
+                // Filter by school
+                if (currentFilter !== 'all') {
+                    const school = getSchool(f.department_source);
+                    if (school !== currentFilter) return false;
+                }
+
+                // Filter by search
+                if (currentSearch) {
+                    const searchLower = currentSearch.toLowerCase();
+                    const text = `${f.name} ${f.title} ${f.email} ${f.department_source}`.toLowerCase();
+                    if (!text.includes(searchLower)) return false;
+                }
+
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="no-results">No faculty found matching your criteria.</div>';
+                return;
+            }
+
+            grid.innerHTML = filtered.map(createCard).join('');
+        }
+
+        // Update stats
+        function updateStats() {
+            document.getElementById('totalCount').textContent = facultyData.length;
+            document.getElementById('emailCount').textContent = facultyData.filter(f => f.email).length;
+            document.getElementById('phoneCount').textContent = facultyData.filter(f => f.phone).length;
+            document.getElementById('pubCount').textContent = facultyData.filter(f => f.top_publications && f.top_publications.length > 0).length;
+        }
+
+        // Load data
+        async function loadData() {
+            try {
+                const response = await fetch('faculty_data.json');
+                if (!response.ok) throw new Error('Failed to load data');
+                facultyData = await response.json();
+                updateStats();
+                renderFaculty();
+            } catch (error) {
+                document.getElementById('facultyGrid').innerHTML = `
+                    <div class="no-results">
+                        <p>Error loading data. Make sure <code>faculty_data.json</code> exists.</p>
+                        <p style="margin-top: 1rem; font-size: 0.9rem;">Run: <code>python -m http.server 8000</code></p>
+                    </div>
+                `;
+            }
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            renderFaculty();
+        });
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                renderFaculty();
+            });
+        });
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+
+</html>
