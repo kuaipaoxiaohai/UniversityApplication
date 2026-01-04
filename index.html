@@ -383,7 +383,7 @@
 <body>
     <header class="header">
         <h1>🎓 Faculty Directory</h1>
-        <p>Stanford & MIT - Chemical Engineering, Materials Science, Sustainability</p>
+        <p>Top Universities - Chemical Engineering, Materials Science, Chemistry, Sustainability</p>
     </header>
 
     <div class="stats-bar" id="statsBar">
@@ -412,8 +412,19 @@
         <button class="filter-btn active" data-filter="all">All</button>
         <button class="filter-btn" data-filter="stanford-cheme">Stanford ChemE</button>
         <button class="filter-btn" data-filter="stanford-mse">Stanford MSE</button>
-        <button class="filter-btn" data-filter="stanford-doerr">Doerr School</button>
+        <button class="filter-btn" data-filter="stanford-doerr">Stanford Doerr</button>
         <button class="filter-btn" data-filter="mit-dmse">MIT DMSE</button>
+        <button class="filter-btn" data-filter="harvard-chemistry">Harvard Chem</button>
+        <button class="filter-btn" data-filter="harvard-seas">Harvard SEAS</button>
+        <button class="filter-btn" data-filter="yale-chemistry">Yale Chem</button>
+        <button class="filter-btn" data-filter="princeton-chemistry">Princeton Chem</button>
+        <button class="filter-btn" data-filter="uchicago-chemistry">UChicago Chem</button>
+        <button class="filter-btn" data-filter="northwestern-chemistry">NU Chem</button>
+        <button class="filter-btn" data-filter="northwestern-mse">NU MSE</button>
+        <button class="filter-btn" data-filter="berkeley-chemistry">Berkeley Chem</button>
+        <button class="filter-btn" data-filter="berkeley-cbe">Berkeley CBE</button>
+        <button class="filter-btn" data-filter="caltech-cce">Caltech CCE</button>
+        <button class="filter-btn" data-filter="caltech-materials">Caltech MatSci</button>
     </div>
 
     <main class="faculty-grid" id="facultyGrid">
@@ -435,6 +446,17 @@
             if (source.includes('mse.stanford')) return 'stanford-mse';
             if (source.includes('sustainability.stanford')) return 'stanford-doerr';
             if (source.includes('mit.edu')) return 'mit-dmse';
+            if (source.includes('chemistry.harvard')) return 'harvard-chemistry';
+            if (source.includes('seas.harvard')) return 'harvard-seas';
+            if (source.includes('yale.edu') && source.includes('chem')) return 'yale-chemistry';
+            if (source.includes('chemistry.princeton')) return 'princeton-chemistry';
+            if (source.includes('chemistry.uchicago')) return 'uchicago-chemistry';
+            if (source.includes('chemistry.northwestern')) return 'northwestern-chemistry';
+            if (source.includes('matsci.northwestern')) return 'northwestern-mse';
+            if (source.includes('chemistry.berkeley')) return 'berkeley-chemistry';
+            if (source.includes('berkeley') && source.includes('cbe')) return 'berkeley-cbe';
+            if (source.includes('cce.caltech')) return 'caltech-cce';
+            if (source.includes('cms.caltech')) return 'caltech-materials';
             return 'unknown';
         }
 
@@ -442,8 +464,19 @@
             const labels = {
                 'stanford-cheme': 'Stanford ChemE',
                 'stanford-mse': 'Stanford MSE',
-                'stanford-doerr': 'Doerr School',
-                'mit-dmse': 'MIT DMSE'
+                'stanford-doerr': 'Stanford Doerr',
+                'mit-dmse': 'MIT DMSE',
+                'harvard-chemistry': 'Harvard Chem',
+                'harvard-seas': 'Harvard SEAS',
+                'yale-chemistry': 'Yale Chem',
+                'princeton-chemistry': 'Princeton Chem',
+                'uchicago-chemistry': 'UChicago Chem',
+                'northwestern-chemistry': 'NU Chem',
+                'northwestern-mse': 'NU MSE',
+                'berkeley-chemistry': 'Berkeley Chem',
+                'berkeley-cbe': 'Berkeley CBE',
+                'caltech-cce': 'Caltech CCE',
+                'caltech-materials': 'Caltech MatSci'
             };
             return labels[school] || 'Unknown';
         }
