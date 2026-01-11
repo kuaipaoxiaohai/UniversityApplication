@@ -1,0 +1,8 @@
+INFO:__main__:--- Analyzing princeton_final ---
+INFO:__main__:princeton_final 200 OK
+INFO:__main__:Found 0 'Professor' text nodes
+INFO:__main__:Identified 0 candidate cards via fallback
+INFO:__main__:--- Analyzing uchicago_final ---
+INFO:__main__:uchicago_final 200 OK
+INFO:__main__:Found 0 'Professor' text nodes
+INFO:__main__:Identified 0 candidate cards via fallback

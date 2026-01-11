@@ -1,0 +1,55 @@
+INFO:__main__:--- harvard_seas ---
+INFO:__main__:Status: 200
+INFO:__main__:Title: Contact | Harvard John A. Paulson School of Engineering and Applied Sciences
+INFO:__main__:Profile-like links: 0
+INFO:__main__:  'Faculty' found: 2 times
+INFO:__main__:--- yale_chemistry ---
+INFO:__main__:Status: 200
+INFO:__main__:Title: Faculty | Department of Chemistry
+INFO:__main__:Profile-like links: 53
+INFO:__main__:  'Professor' found: 42 times
+INFO:__main__:  'Faculty' found: 8 times
+INFO:__main__:  'Associate' found: 3 times
+INFO:__main__:  'Assistant' found: 5 times
+INFO:__main__:--- princeton_chemistry ---
+INFO:__main__:Status: 200
+INFO:__main__:Title: Faculty – Princeton University Department of Chemistry
+INFO:__main__:Profile-like links: 124
+INFO:__main__:  'Faculty' found: 17 times
+INFO:__main__:  'Associate' found: 3 times
+INFO:__main__:--- uchicago_chemistry ---
+INFO:__main__:Status: 200
+INFO:__main__:Title: Faculty | Department of Chemistry | The University of Chicago
+INFO:__main__:Profile-like links: 0
+INFO:__main__:  'Faculty' found: 3 times
+INFO:__main__:--- northwestern_chemistry ---
+INFO:__main__:Status: 200
+INFO:__main__:Title: Faculty: Department of Chemistry - Northwestern University
+INFO:__main__:Profile-like links: 3
+INFO:__main__:  'Professor' found: 54 times
+INFO:__main__:  'Faculty' found: 16 times
+INFO:__main__:  'Associate' found: 8 times
+INFO:__main__:  'Assistant' found: 10 times
+INFO:__main__:--- berkeley_chemistry ---
+INFO:__main__:Status: 200
+INFO:__main__:Title: Faculty & Research | College of Chemistry
+INFO:__main__:Profile-like links: 4
+INFO:__main__:  'Professor' found: 1 times
+INFO:__main__:  'Faculty' found: 12 times
+INFO:__main__:--- berkeley_cbe ---
+INFO:__main__:Status: 404
+INFO:__main__:FAILED: 404
+INFO:__main__:--- caltech_cce ---
+INFO:__main__:Status: 403
+INFO:__main__:FAILED: 403
+INFO:__main__:--- caltech_materials ---
+ERROR:__main__:Exception: HTTPSConnectionPool(host='www.materials.caltech.edu', port=443): Max retries exceeded with url: /people (Caused by SSLError(SSLEOFError(8, '[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1018)')))
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex's Cold Email Generator - Summer Research 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-card-hover: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --gradient-1: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --gradient-2: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+            --gradient-3: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%);
+            border-bottom: 1px solid var(--border-color);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Filter Section */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Professor Card */
+        .professor-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .professor-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-1);
+        }
+
+        .professor-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.15);
+            border-color: var(--primary);
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .professor-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .professor-title {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .school-badge {
+            display: inline-block;
+            padding: 0.375rem 0.875rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .school-stanford {
+            background: var(--gradient-2);
+            color: white;
+        }
+
+        .school-mit {
+            background: var(--gradient-3);
+            color: white;
+        }
+
+        .school-northwestern {
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .contact-info {
+            margin-bottom: 1rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .contact-item a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .contact-item a:hover {
+            color: var(--secondary);
+        }
+
+        .contact-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 1rem 0;
+        }
+
+        .research-section h4 {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .research-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .research-tag {
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--primary);
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .card-footer {
+            padding: 1rem 1.5rem;
+            background: rgba(99, 102, 241, 0.05);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 2rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: 16px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: sticky;
+            top: 0;
+            background: var(--bg-card);
+        }
+
+        .modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .modal-header .email-recipient {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .close-btn {
+            background: var(--bg-card-hover);
+            border: none;
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .close-btn:hover {
+            background: var(--primary);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .email-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .email-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .email-subject {
+            background: var(--bg-dark);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-weight: 500;
+        }
+
+        .email-content {
+            background: var(--bg-dark);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        .copy-success {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--secondary);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .copy-success.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-bar {
+                gap: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.75rem;
+            }
+        }
+
+        /* Match Indicator */
+        .match-score {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--secondary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .match-high {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .match-medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <h1>🎓 Summer Research Email Generator</h1>
+        <p>Personalized Cold Emails for Alex (Hung Yu Zhu) - BASIS International School Guangzhou</p>
+    </header>
+
+    <div class="stats-bar">
+        <div class="stat">
+            <div class="stat-number" id="totalProfs">15</div>
+            <div class="stat-label">Target Professors</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">3</div>
+            <div class="stat-label">Universities</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">🔬</div>
+            <div class="stat-label">Chemistry & Materials Focus</div>
+        </div>
+    </div>
+
+    <main class="container">
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterCards('all')">All Professors</button>
+            <button class="filter-btn" onclick="filterCards('stanford')">Stanford</button>
+            <button class="filter-btn" onclick="filterCards('mit')">MIT</button>
+            <button class="filter-btn" onclick="filterCards('northwestern')">Northwestern</button>
+        </div>
+
+        <div class="cards-grid" id="cardsGrid">
+            <!-- Cards will be inserted here by JavaScript -->
+        </div>
+    </main>
+
+    <!-- Email Modal -->
+    <div class="modal-overlay" id="emailModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div>
+                    <h3 id="modalProfName">Email Draft</h3>
+                    <div class="email-recipient" id="modalEmail"></div>
+                </div>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="email-section">
+                    <div class="email-label">Subject Line</div>
+                    <div class="email-subject" id="emailSubject"></div>
+                </div>
+                <div class="email-section">
+                    <div class="email-label">Email Body</div>
+                    <div class="email-content" id="emailBody"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="copyEmail()">📋 Copy Email</button>
+                <button class="btn btn-primary" id="mailtoBtn">✉️ Open in Email Client</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="copy-success" id="copySuccess">✓ Email copied to clipboard!</div>
+
+    <script>
+        // Professor Data with personalized emails
+        const professors = [
+            // ========== STANFORD - CHEMISTRY & MATERIALS ==========
+            {
+                name: "William Chueh",
+                title: "Professor",
+                school: "Stanford",
+                department: "Stanford Doerr School of Sustainability",
+                email: "wchueh@stanford.edu",
+                phone: "(650) 725-7515",
+                profileUrl: "https://sustainability.stanford.edu/people/william-chueh",
+                researchTags: ["Electrochemistry", "CO₂ Conversion", "Energy Storage", "Solid-State Batteries"],
+                matchLevel: "high",
+                subject: "Prospective Student Inquiry: Summer Research in CO₂-Based Materials",
+                emailBody: `Dear Professor Chueh,
+
+I hope this email finds you well. My name is Alex (Hung Yu Zhu), and I am an eleventh-grade student at BASIS International School Guangzhou in China. I am writing to inquire about the possibility of joining your research group as a summer research assistant (unpaid) in 2026.
+
+Your pioneering work on electrochemical conversion of CO₂ and advancing solid-state battery technologies resonates deeply with my research background. Having studied your publications on ceramic electrolytes and CO₂ reduction mechanisms, I am particularly fascinated by how your group bridges fundamental electrochemistry with practical energy applications.
+
+Since ninth grade, I have been conducting research at the Key Laboratory of Low-carbon Chemistry & Energy Conservation of Guangdong Province at Sun Yat-sen University, where I participated in developing poly(methyl ethylene carbonate-phthalate) (PPC-P), a novel fully biodegradable plastic. My work specifically focused on synthesizing CO₂-based polycarbonate diols and contributed to research on 4D printing materials. This hands-on experience has given me a strong foundation in polymer chemistry, experimental design, and data analysis.
+
+Academically, I maintain a 4.0 GPA, scored 1570 on the SAT (800 Math), and achieved 115 on TOEFL. I completed AP Chemistry with a perfect score of 5 in ninth grade and have since advanced to CCC (Canadian Chemistry Competition, qualified for CCO) and AIME (through AMC 12).
+
+I would be deeply grateful for the opportunity to contribute to your lab, whether through data analysis, literature review, or assisting with experiments. I am flexible regarding the format—either virtual collaboration or an in-person internship would be wonderful.
+
+Would you be open to a brief Zoom conversation to discuss potential opportunities? Alternatively, if you could direct me to one of your graduate students, I would greatly appreciate any guidance.
+
+Thank you for considering my inquiry. I have attached my CV for your reference.
+
+Best regards,
+Alex (Hung Yu Zhu)
+BASIS International School Guangzhou
+Grade 11`
+            },
+            {
+                name: "Stacey Bent",
+                title: "Professor",
+                school: "Stanford",
+                department: "Chemical Engineering / Materials Science",
+                email: "sbent@stanford.edu",
+                phone: "(650) 723-9780",
+                profileUrl: "https://sustainability.stanford.edu/people/stacey-bent",
+                researchTags: ["Thin Films", "Surface Chemistry", "Solar Energy", "Atomic Layer Deposition"],
+                matchLevel: "high",
+                subject: "Prospective Student Inquiry: Summer Research in Surface Chemistry & Materials",
+                emailBody: `Dear Professor Bent,
+
+I hope this email finds you well. My name is Alex (Hung Yu Zhu), and I am an eleventh-grade student at BASIS International School Guangzhou in China. I am writing to express my strong interest in joining your research group as a summer research assistant (unpaid) in 2026.
+
+Your groundbreaking work on atomic layer deposition (ALD) and surface functionalization for energy applications has captivated my attention. I am particularly impressed by how your group leverages molecular-level control to engineer materials for solar cells and catalysis—this precision-driven approach to materials science aligns perfectly with my research interests.
+
+Since ninth grade, I have been working at the Key Laboratory of Low-carbon Chemistry & Energy Conservation at Sun Yat-sen University, focusing on CO₂-based biodegradable polymers. My research on poly(methyl ethylene carbonate-phthalate) (PPC-P) synthesis taught me the importance of controlling molecular architecture to achieve desired material properties—a principle I see elegantly applied in your ALD research.
+
+I have maintained a 4.0 GPA, scored 1570 on the SAT (800 Math), and achieved 115 on TOEFL. I earned a perfect 5 on AP Chemistry in ninth grade, qualified for the Canadian Chemistry Olympiad through CCC, and advanced to AIME through AMC 12.
+
+I would be honored to contribute to your research in any capacity—from literature reviews and data processing to hands-on experimental assistance. I am available for either remote or in-person work this summer.
+
+Could we possibly schedule a brief Zoom call to discuss potential opportunities? I would also be grateful if you could connect me with a graduate student in your lab.
+
+Thank you very much for your time and consideration. My CV is attached for your review.
+
+Warm regards,
+Alex (Hung Yu Zhu)
+BASIS International School Guangzhou
+Grade 11`
+            },
+            {
+                name: "Thomas Jaramillo",
+                title: "Professor",
+                school: "Stanford",
+                department: "Chemical Engineering / SUNCAT Center",
+                email: "jaramillo@stanford.edu",
+                phone: "650-926-3434",
+                profileUrl: "https://sustainability.stanford.edu/people/thomas-jaramillo",
+                researchTags: ["Electrocatalysis", "Hydrogen Production", "CO₂ Reduction", "Renewable Energy"],
+                matchLevel: "high",
+                subject: "Prospective Student Inquiry: Summer Research in Electrocatalysis",
+                emailBody: `Dear Professor Jaramillo,
+
+I hope this email finds you well. My name is Alex (Hung Yu Zhu), and I am an eleventh-grade student at BASIS International School Guangzhou in China. I am reaching out to inquire about the possibility of a summer research position (unpaid) in your group for 2026.
+
+Your pioneering research on electrocatalysis for sustainable fuel production—particularly your work on hydrogen evolution and CO₂ reduction—deeply inspires me. Reading about your group's development of metalloporphyrin catalysts and bridging AI with photovoltaics, I am excited by how fundamental chemistry can address global energy challenges.
+
+My research background aligns closely with these interests. Since ninth grade, I have worked at Sun Yat-sen University's Key Laboratory of Low-carbon Chemistry & Energy Conservation, where I contributed to developing CO₂-based fully biodegradable plastics (PPC-P) and 4D printing materials. This experience taught me valuable skills in experimental design, polymer synthesis, and analyzing chemical processes—skills I am eager to apply in electrocatalysis research.
+
+Academically, I hold a 4.0 GPA, SAT 1570 (Math 800), and TOEFL 115. I scored a perfect 5 on AP Chemistry in ninth grade, qualified for the Canadian Chemistry Olympiad (CCO), and advanced to AIME through AMC 12.
+
+I would be grateful for any opportunity to contribute to your lab—whether through data analysis, literature review, or assisting with electrochemical experiments. I am flexible regarding format (virtual or in-person).
+
+Would it be possible to schedule a brief Zoom meeting to discuss potential opportunities? I would also appreciate being connected with a graduate student in your group.
+
+Thank you for considering my request. My CV is attached.
+
+Best regards,
+Alex (Hung Yu Zhu)
+BASIS International School Guangzhou
+Grade 11`
+            },
+            {
+                name: "Craig Criddle",
+                title: "Professor",
+                school: "Stanford",
+                department: "Civil & Environmental Engineering",
+                email: "criddle@stanford.edu",
+                phone: "(650) 736-2274",
+                profileUrl: "https://sustainability.stanford.edu/people/craig-criddle",
+                researchTags: ["Biodegradable Polymers", "Environmental Biotechnology", "Sustainable Materials", "PHA Production"],
+                matchLevel: "high",
+                subject: "Prospective Student Inquiry: Summer Research in Biodegradable Polymers",
+                emailBody: `Dear Professor Criddle,
+
+I hope this email finds you well. My name is Alex (Hung Yu Zhu), and I am an eleventh-grade student at BASIS International School Guangzhou in China. I am writing to express my keen interest in joining your research group as a summer research assistant (unpaid) in 2026.
+
+Your research on biodegradable polymers and environmental biotechnology is precisely aligned with my academic passion. I am particularly fascinated by your work on biologically-produced plastics and sustainable material alternatives—this represents the kind of impactful science I hope to pursue in my career.
+
+I have hands-on experience in this field. Since ninth grade, I have been conducting research at the Key Laboratory of Low-carbon Chemistry & Energy Conservation at Sun Yat-sen University, where I contributed to developing poly(methyl ethylene carbonate-phthalate) (PPC-P), a novel fully biodegradable plastic synthesized from CO₂. My work focused on the synthesis of CO₂-based polycarbonate diols and extended to 4D printing applications. This experience has given me practical skills in polymer characterization, experimental design, and sustainable materials research.
+
+I maintain a 4.0 GPA, scored SAT 1570 (Math 800), and TOEFL 115. I completed AP Chemistry with a perfect 5 in ninth grade, qualified for the Canadian Chemistry Olympiad, and advanced to AIME.
+
+I would be thrilled to contribute to your research on sustainable polymers in any capacity—data analysis, literature review, or hands-on lab work. I am available for either virtual or in-person research.
+
+Would you be open to a brief Zoom conversation to discuss potential opportunities? I would also appreciate any guidance from your graduate students.
+
+Thank you for your time and consideration. My CV is attached.
+
+Sincerely,
+Alex (Hung Yu Zhu)
+BASIS International School Guangzhou
+Grade 11`
+            },
+            {
+                name: "Yi Cui",
+                title: "Professor",
+                school: "Stanford",
+                department: "Materials Science & Engineering",
+                email: "yicui@stanford.edu",
+                phone: "",
+                profileUrl: "https://sustainability.stanford.edu/people/yi-cui",
+                researchTags: ["Nanomaterials", "Energy Storage", "Batteries", "Sustainable Materials"],
+                matchLevel: "high",
+                subject: "Prospective Student Inquiry: Summer Research in Nanomaterials & Sustainability",
+                emailBody: `Dear Professor Cui,
+
+I hope this email finds you well. My name is Alex (Hung Yu Zhu), and I am an eleventh-grade student at BASIS International School Guangzhou in China. I am writing to inquire about the possibility of joining your research group as a summer research assistant (unpaid) in 2026.
+
+Your extraordinary contributions to nanomaterials science—from sodium battery electrodes to sustainable material innovations—have profoundly inspired my interest in materials chemistry. Your group's approach to solving energy and environmental challenges through innovative material design represents the cutting-edge research I hope to contribute to.
+
+My research experience aligns with your sustainability focus. Since ninth grade, I have worked at Sun Yat-sen University's Key Laboratory of Low-carbon Chemistry & Energy Conservation, developing CO₂-based biodegradable plastics (PPC-P) and 4D printing materials. This hands-on experience taught me polymer synthesis, material characterization, and the importance of designing materials with their environmental impact in mind.
+
+Academically, I maintain a 4.0 GPA, SAT 1570 (Math 800), and TOEFL 115. I achieved a perfect 5 on AP Chemistry in ninth grade, qualified for the Canadian Chemistry Olympiad, and advanced to AIME.
+
+I would be honored to contribute to your lab in any capacity—data processing, literature synthesis, or experimental assistance. I am flexible regarding format (virtual or in-person).
+
+Would it be possible to schedule a brief Zoom call to discuss potential opportunities? I would also greatly appreciate being connected with a graduate student mentor.
+
+Thank you for considering my inquiry. My CV is attached.
+
+Best regards,
+Alex (Hung Yu Zhu)
+BASIS International School Guangzhou
+Grade 11`
+            },
+
+            // ========== MIT - MATERIALS SCIENCE ==========
+            {
+                name: "Yet-Ming Chiang",
+                title: "Professor",
+                school: "MIT",
+                department: "Materials Science and Engineering (DMSE)",
+                email: "ychiang@mit.edu",
+                phone: "+1 617 253 6471",
+                profileUrl: "https://dmse.mit.edu/people/faculty/yet-ming-chiang/",
+                researchTags: ["Electrochemistry", "Battery Materials", "Ceramics", "Energy Storage"],
+                matchLevel: "high",
+                subject: "Prospective Student Inquiry: Summer Research in Electrochemical Materials",
+                emailBody: `Dear Professor Chiang,
+
+I hope this email finds you well. My name is Alex (Hung Yu Zhu), and I am an eleventh-grade student at BASIS International School Guangzhou in China. I am writing to inquire about the possibility of joining your research group as a summer research assistant (unpaid) in 2026.
+
+Your pioneering work on electrochemical materials—particularly your research on solid-state batteries and understanding dendrite formation mechanisms—has deeply inspired me. Your approach to solving fundamental materials challenges with practical energy applications represents exactly the kind of impactful research I aspire to pursue.
+
+My background in materials chemistry provides relevant experience. Since ninth grade, I have conducted research at Sun Yat-sen University's Key Laboratory of Low-carbon Chemistry & Energy Conservation, contributing to the development of CO₂-based biodegradable polymers (PPC-P) and 4D printing materials. This experience gave me hands-on skills in polymer synthesis, experimental design, and materials characterization.
+
+I maintain a 4.0 GPA, scored SAT 1570 (Math 800), and TOEFL 115. I earned a perfect 5 on AP Chemistry in ninth grade, qualified for the Canadian Chemistry Olympiad, and advanced to AIME.
+
+I would be grateful for any opportunity to contribute to your lab—data analysis, literature review, or experimental assistance. I am available for virtual or in-person work.
+
+Could we possibly schedule a brief Zoom conversation to discuss potential opportunities? I would also appreciate being connected with a graduate student in your group.
+
+Thank you for your time and consideration. My CV is attached.
+
+Best regards,
+Alex (Hung Yu Zhu)
+BASIS International School Guangzhou
+Grade 11`
+            },
+            {
+                name: "Elsa Olivetti",
+                title: "Professor",
+                school: "MIT",
+                department: "Materials Science and Engineering (DMSE)",
+                email: "elsao@mit.edu",
+                phone: "+1 617 253 0877",
+                profileUrl: "https://dmse.mit.edu/people/faculty/elsa-a-olivetti/",
+                googleScholar: "https://scholar.google.com/citations?user=T_bLpqYAAAAJ&hl=en",
+                researchTags: ["Sustainable Materials", "Materials Informatics", "Circular Economy", "Zeolite Design"],
+                matchLevel: "high",
+                subject: "Prospective Student Inquiry: Summer Research in Sustainable Materials",
+                emailBody: `Dear Professor Olivetti,
+
+I hope this email finds you well. My name is Alex (Hung Yu Zhu), and I am an eleventh-grade student at BASIS International School Guangzhou in China. I am writing to express my strong interest in joining your research group as a summer research assistant (unpaid) in 2026.
+
+Your research on sustainable materials and circular economy approaches to materials design resonates deeply with my passion. I am particularly fascinated by your work on custom-designing zeolites for decarbonization and using machine learning to accelerate materials discovery—this intersection of sustainability and data-driven research is exactly where I hope to contribute.
+
+My research experience aligns with these interests. Since ninth grade, I have worked at Sun Yat-sen University's Key Laboratory of Low-carbon Chemistry & Energy Conservation, developing CO₂-based fully biodegradable plastics (PPC-P). This experience taught me that sustainable materials design requires understanding the entire lifecycle—from synthesis to degradation—a principle central to your circular economy research.
+
+Academically, I maintain a 4.0 GPA, SAT 1570 (Math 800), and TOEFL 115. I scored a perfect 5 on AP Chemistry in ninth grade, qualified for the Canadian Chemistry Olympiad, and advanced to AIME (AMC 12).
+
+I would be honored to contribute to your research in any capacity—data analysis, literature synthesis, or computational support. I am flexible regarding format (virtual or in-person).
+
+Would it be possible to schedule a brief Zoom meeting to discuss potential opportunities? I would also appreciate being connected with a graduate student in your lab.
+
+Thank you for your time and consideration. My CV is attached.
+
+Warm regards,
+Alex (Hung Yu Zhu)
+BASIS International School Guangzhou
+Grade 11`
+            },
+            {
+                name: "Yoel Fink",
+                title: "Professor",
+                school: "MIT",
+                department: "Materials Science and Engineering (DMSE)",
+                email: "yoel@mit.edu",
+                phone: "+1 617 258 6113",
+                profileUrl: "https://dmse.mit.edu/people/faculty/yoel-fink/",
+                googleScholar: "https://scholar.google.com/citations?user=cqYEk4AAAAAJ",
+                researchTags: ["Fiber Electronics", "Multifunctional Fibers", "Wearable Technology", "Advanced Manufacturing"],
+                matchLevel: "medium",
+                subject: "Prospective Student Inquiry: Summer Research in Advanced Materials & Fibers",
+                emailBody: `Dear Professor Fink,
+
+I hope this email finds you well. My name is Alex (Hung Yu Zhu), and I am an eleventh-grade student at BASIS International School Guangzhou in China. I am writing to inquire about the possibility of joining your research group as a summer research assistant (unpaid) in 2026.
+
+Your groundbreaking work on multifunctional fibers—particularly the development of fiber-based lithium-ion batteries with virtually unlimited length—fascinates me. The way your group combines materials science with practical manufacturing to create wearable electronics represents an inspiring integration of fundamental research and real-world applications.
+
+My background in polymer science provides relevant experience. Since ninth grade, I have conducted research at Sun Yat-sen University's Key Laboratory of Low-carbon Chemistry & Energy Conservation, where I worked on CO₂-based biodegradable polymers and 4D printing materials. This experience taught me the importance of understanding polymer processing and structure-property relationships—principles that connect to your fiber manufacturing research.
+
+I maintain a 4.0 GPA, SAT 1570 (Math 800), and TOEFL 115. I earned a perfect 5 on AP Chemistry in ninth grade, qualified for the Canadian Chemistry Olympiad, and advanced to AIME.
+
+I would be grateful for any opportunity to contribute to your lab—literature review, data analysis, or experimental assistance. I am available for virtual or in-person work.
+
+Would you be open to a brief Zoom call to discuss potential opportunities? I would also appreciate being connected with a graduate student mentor.
+
+Thank you for your consideration. My CV is attached.
+
+Best regards,
+Alex (Hung Yu Zhu)
+BASIS International School Guangzhou
+Grade 11`
+            },
+            {
+                name: "Rafael Gómez-Bombarelli",
+                title: "Associate Professor",
+                school: "MIT",
+                department: "Materials Science and Engineering (DMSE)",
+                email: "rafagb@mit.edu",
+                phone: "+1 617 253 5632",
+                profileUrl: "https://dmse.mit.edu/people/faculty/rafael-gomez-bombarelli/",
+                googleScholar: "https://scholar.google.com/citations?user=jJ5JkCQAAAAJ",
+                researchTags: ["Machine Learning", "Materials Design", "Computational Chemistry", "Molecular Simulation"],
+                matchLevel: "medium",
+                subject: "Prospective Student Inquiry: Summer Research in Computational Materials Science",
+                emailBody: `Dear Professor Gómez-Bombarelli,
+
+I hope this email finds you well. My name is Alex (Hung Yu Zhu), and I am an eleventh-grade student at BASIS International School Guangzhou in China. I am writing to inquire about the possibility of joining your research group as a summer research assistant (unpaid) in 2026.
+
+Your innovative work applying machine learning to materials discovery—particularly your research on custom-designing zeolites for carbon capture—is incredibly inspiring. The way your group accelerates materials design through computational approaches represents the future of materials science research.
+
+While my primary background is experimental, I am eager to develop computational skills. Since ninth grade, I have worked at Sun Yat-sen University's Key Laboratory of Low-carbon Chemistry & Energy Conservation, synthesizing CO₂-based biodegradable polymers (PPC-P) and contributing to 4D printing materials research. This experience with polymer chemistry could provide insights for computational modeling of polymer systems.
+
+Academically, I maintain a 4.0 GPA, SAT 1570 (Math 800), and TOEFL 115. My perfect 800 in SAT Math and advancement to AIME demonstrate strong quantitative abilities that would support computational research.
+
+I would be grateful for any opportunity to learn from your group—whether through literature review, data analysis, or introductory computational work. I am available for virtual or in-person research.
+
+Would it be possible to schedule a brief Zoom meeting to discuss potential opportunities? I would also appreciate being connected with a graduate student mentor.
+
+Thank you for your consideration. My CV is attached.
+
+Best regards,
+Alex (Hung Yu Zhu)
+BASIS International School Guangzhou
+Grade 11`
+            },
+            {
+                name: "Jeffrey Grossman",
+                title: "Professor",
+                school: "MIT",
+                department: "Materials Science and Engineering (DMSE)",
+                email: "jcg@mit.edu",
+                phone: "+1 617 324 3566",
+                profileUrl: "https://dmse.mit.edu/people/faculty/jeffrey-grossman/",
+                researchTags: ["Solar Energy", "Thermal Storage", "Sustainable Materials", "Nanomaterials"],
+                matchLevel: "high",
+                subject: "Prospective Student Inquiry: Summer Research in Sustainable Energy Materials",
+                emailBody: `Dear Professor Grossman,
+
+I hope this email finds you well. My name is Alex (Hung Yu Zhu), and I am an eleventh-grade student at BASIS International School Guangzhou in China. I am writing to express my strong interest in joining your research group as a summer research assistant (unpaid) in 2026.
+
+Your research on sustainable cooling systems and solar thermal storage materials deeply inspires me. I am particularly impressed by your work developing passive cooling technologies that work without electricity—addressing climate change while serving communities with limited resources represents exactly the impactful science I hope to pursue.
+
+My background aligns with your sustainability focus. Since ninth grade, I have conducted research at Sun Yat-sen University's Key Laboratory of Low-carbon Chemistry & Energy Conservation, developing CO₂-based biodegradable plastics (PPC-P) and 4D printing materials. This experience taught me how materials innovation can address environmental challenges—a principle central to your research philosophy.
+
+I maintain a 4.0 GPA, SAT 1570 (Math 800), and TOEFL 115. I scored a perfect 5 on AP Chemistry in ninth grade, qualified for the Canadian Chemistry Olympiad, and advanced to AIME.
+
+I would be honored to contribute to your lab in any capacity—literature review, data analysis, or experimental assistance. I am flexible regarding format (virtual or in-person).
+
+Would you be open to a brief Zoom conversation to discuss potential opportunities? I would also appreciate being connected with a graduate student mentor.
+
+Thank you for your time and consideration. My CV is attached.
+
+Warm regards,
+Alex (Hung Yu Zhu)
+BASIS International School Guangzhou
+Grade 11`
+            },
+
+            // ========== NORTHWESTERN ==========
+            {
+                name: "Sossina Haile",
+                title: "Professor",
+                school: "Northwestern",
+                department: "Materials Science and Engineering",
+                email: "sossina.haile@northwestern.edu",
+                phone: "",
+                profileUrl: "https://www.mccormick.northwestern.edu/research-faculty/directory/profiles/haile-sossina.html",
+                researchTags: ["Fuel Cells", "Electrochemistry", "Solid Oxide Materials", "Clean Energy"],
+                matchLevel: "high",
+                subject: "Prospective Student Inquiry: Summer Research in Electrochemical Energy Materials",
+                emailBody: `Dear Professor Haile,
+
+I hope this email finds you well. My name is Alex (Hung Yu Zhu), and I am an eleventh-grade student at BASIS International School Guangzhou in China. I am writing to inquire about the possibility of joining your research group as a summer research assistant (unpaid) in 2026.
+
+Your pioneering contributions to fuel cell science—recognized by the World Academy of Ceramics International Prize and AIC Chemical Pioneer Award—have deeply inspired my interest in electrochemical energy conversion. Your work establishing new classes of fuel cells represents exactly the kind of transformative research I hope to contribute to.
+
+My research background provides relevant experience. Since ninth grade, I have worked at Sun Yat-sen University's Key Laboratory of Low-carbon Chemistry & Energy Conservation, contributing to CO₂-based biodegradable polymer (PPC-P) synthesis and 4D printing materials research. This hands-on experience taught me experimental design, materials characterization, and the importance of understanding chemical processes at the molecular level.
+
+Academically, I maintain a 4.0 GPA, SAT 1570 (Math 800), and TOEFL 115. I earned a perfect 5 on AP Chemistry in ninth grade, qualified for the Canadian Chemistry Olympiad, and advanced to AIME.
+
+I would be grateful for any opportunity to contribute to your lab—literature review, data analysis, or experimental assistance. I am available for virtual or in-person work.
+
+Could we schedule a brief Zoom conversation to discuss potential opportunities? I would also appreciate being connected with a graduate student in your group.
+
+Thank you for your time and consideration. My CV is attached.
+
+Best regards,
+Alex (Hung Yu Zhu)
+BASIS International School Guangzhou
+Grade 11`
+            },
+            {
+                name: "Nathan Gianneschi",
+                title: "Professor",
+                school: "Northwestern",
+                department: "Chemistry / Materials Science",
+                email: "nathan.gianneschi@northwestern.edu",
+                phone: "847-491-2106",
+                profileUrl: "https://www.mccormick.northwestern.edu/research-faculty/directory/profiles/gianneschi-nathan.html",
+                researchTags: ["Polymer Chemistry", "Biomaterials", "Soft Matter", "Nanomaterials"],
+                matchLevel: "high",
+                subject: "Prospective Student Inquiry: Summer Research in Polymer Chemistry",
+                emailBody: `Dear Professor Gianneschi,
+
+I hope this email finds you well. My name is Alex (Hung Yu Zhu), and I am an eleventh-grade student at BASIS International School Guangzhou in China. I am writing to express my strong interest in joining your research group as a summer research assistant (unpaid) in 2026.
+
+Your research on polymer chemistry and soft materials—particularly your work on proteomimetic polymers and using liquid-phase TEM to explore organic nanomaterials—captivates me. The elegant way your group designs functional polymers at the molecular level, with applications ranging from medicine to materials science, represents cutting-edge research I am passionate about.
+
+My background directly aligns with your polymer focus. Since ninth grade, I have conducted research at Sun Yat-sen University's Key Laboratory of Low-carbon Chemistry & Energy Conservation, developing CO₂-based biodegradable polymers (PPC-P) and contributing to 4D printing materials research. This hands-on experience with polymer synthesis and characterization has prepared me to contribute meaningfully to polymer chemistry research.
+
+I maintain a 4.0 GPA, SAT 1570 (Math 800), and TOEFL 115. I scored a perfect 5 on AP Chemistry in ninth grade, qualified for the Canadian Chemistry Olympiad, and advanced to AIME.
+
+I would be honored to contribute to your lab in any capacity—literature synthesis, data analysis, or experimental assistance. I am available for virtual or in-person work.
+
+Would you be open to a brief Zoom call to discuss potential opportunities? I would also appreciate being connected with a graduate student mentor.
+
+Thank you for your consideration. My CV is attached.
+
+Warm regards,
+Alex (Hung Yu Zhu)
+BASIS International School Guangzhou
+Grade 11`
+            },
+            {
+                name: "Mark Hersam",
+                title: "Professor",
+                school: "Northwestern",
+                department: "Materials Science / Chemistry",
+                email: "m-hersam@northwestern.edu",
+                phone: "",
+                profileUrl: "https://www.mccormick.northwestern.edu/research-faculty/directory/profiles/hersam-mark.html",
+                researchTags: ["2D Materials", "Nanoelectronics", "Carbon Nanomaterials", "Surface Chemistry"],
+                matchLevel: "medium",
+                subject: "Prospective Student Inquiry: Summer Research in Nanomaterials",
+                emailBody: `Dear Professor Hersam,
+
+I hope this email finds you well. My name is Alex (Hung Yu Zhu), and I am an eleventh-grade student at BASIS International School Guangzhou in China. I am writing to inquire about the possibility of joining your research group as a summer research assistant (unpaid) in 2026.
+
+Your election to the National Academy of Engineering and American Academy of Arts and Sciences reflects the exceptional impact of your research on 2D materials and nanoelectronics. I am particularly fascinated by your work on low-dimensional electronic materials and their applications—this represents the kind of fundamental yet impactful research I aspire to contribute to.
+
+While my primary background is in polymer chemistry, the materials science principles transfer well. Since ninth grade, I have conducted research at Sun Yat-sen University's Key Laboratory of Low-carbon Chemistry & Energy Conservation, synthesizing CO₂-based biodegradable polymers (PPC-P) and working on 4D printing materials. This experience taught me experimental design, materials characterization techniques, and scientific rigor.
+
+I maintain a 4.0 GPA, SAT 1570 (Math 800), and TOEFL 115. I earned a perfect 5 on AP Chemistry in ninth grade, qualified for the Canadian Chemistry Olympiad, and advanced to AIME.
+
+I would be grateful for any opportunity to learn from your group—literature review, data analysis, or introductory experimental work. I am available for virtual or in-person research.
+
+Would it be possible to schedule a brief Zoom conversation to discuss potential opportunities? I would also appreciate being connected with a graduate student mentor.
+
+Thank you for your consideration. My CV is attached.
+
+Best regards,
+Alex (Hung Yu Zhu)
+BASIS International School Guangzhou
+Grade 11`
+            },
+            {
+                name: "Chad Mirkin",
+                title: "Professor",
+                school: "Northwestern",
+                department: "Chemistry / Materials Science",
+                email: "chadnano@northwestern.edu",
+                phone: "847-467-7302",
+                profileUrl: "https://www.mccormick.northwestern.edu/research-faculty/directory/profiles/mirkin-chad.html",
+                researchTags: ["Nanoscience", "DNA Nanotechnology", "Nanomedicine", "Materials Assembly"],
+                matchLevel: "medium",
+                subject: "Prospective Student Inquiry: Summer Research in Nanoscience",
+                emailBody: `Dear Professor Mirkin,
+
+I hope this email finds you well. My name is Alex (Hung Yu Zhu), and I am an eleventh-grade student at BASIS International School Guangzhou in China. I am writing to inquire about the possibility of joining your research group as a summer research assistant (unpaid) in 2026.
+
+Your recognition with the 2024 Kavli Prize in Nanoscience and Guggenheim Fellowship speaks to the transformative impact of your work. I am particularly fascinated by your contributions to DNA nanotechnology and programmable materials assembly—the ability to precisely control matter at the nanoscale opens extraordinary possibilities for medicine and materials science.
+
+My research experience, while in a different domain, has cultivated transferable skills. Since ninth grade, I have worked at Sun Yat-sen University's Key Laboratory of Low-carbon Chemistry & Energy Conservation, developing CO₂-based biodegradable polymers (PPC-P) and contributing to 4D printing research. This hands-on experience taught me experimental design, materials synthesis, and scientific communication.
+
+Academically, I maintain a 4.0 GPA, SAT 1570 (Math 800), and TOEFL 115. I scored a perfect 5 on AP Chemistry in ninth grade, qualified for the Canadian Chemistry Olympiad, and advanced to AIME.
+
+I would be honored to contribute to your lab in any capacity—literature synthesis, data analysis, or assisting with experiments. I am flexible regarding format (virtual or in-person).
+
+Would you be open to a brief Zoom conversation to discuss potential opportunities? I would also appreciate being connected with a graduate student in your group.
+
+Thank you for your time and consideration. My CV is attached.
+
+Best regards,
+Alex (Hung Yu Zhu)
+BASIS International School Guangzhou
+Grade 11`
+            },
+            {
+                name: "Monica Olvera de la Cruz",
+                title: "Professor",
+                school: "Northwestern",
+                department: "Materials Science / Chemistry / Physics",
+                email: "m-olvera@northwestern.edu",
+                phone: "847-491-7801",
+                profileUrl: "https://www.mccormick.northwestern.edu/research-faculty/directory/profiles/olvera-de-la-cruz-monica.html",
+                researchTags: ["Soft Matter Theory", "Polymer Physics", "Electrostatics", "Self-Assembly"],
+                matchLevel: "high",
+                subject: "Prospective Student Inquiry: Summer Research in Polymer Physics",
+                emailBody: `Dear Professor Olvera de la Cruz,
+
+I hope this email finds you well. My name is Alex (Hung Yu Zhu), and I am an eleventh-grade student at BASIS International School Guangzhou in China. I am writing to express my keen interest in joining your research group as a summer research assistant (unpaid) in 2026.
+
+Your election to the National Academy of Sciences and American Philosophical Society, along with the APS Polymer Prize, reflects the profound impact of your theoretical work on polymer physics. I am particularly fascinated by your research on self-assembly and electrostatic interactions in soft matter—understanding the fundamental physics that governs polymer behavior is essential for designing advanced materials.
+
+My experimental polymer background complements theoretical research. Since ninth grade, I have conducted research at Sun Yat-sen University's Key Laboratory of Low-carbon Chemistry & Energy Conservation, synthesizing CO₂-based biodegradable polymers (PPC-P) and working on 4D printing materials. This hands-on experience with polymer synthesis has given me intuition about polymer behavior that I'm eager to understand more deeply through theoretical analysis.
+
+I maintain a 4.0 GPA, SAT 1570 (Math 800), and TOEFL 115. My strong quantitative background (SAT Math 800, AIME qualifier, AP Chemistry 5) positions me well for theoretical research.
+
+I would be grateful for any opportunity to learn from your group—literature review, computational analysis, or research assistance. I am available for virtual or in-person work.
+
+Would you be open to a brief Zoom call to discuss potential opportunities? I would also appreciate being connected with a graduate student mentor.
+
+Thank you for your consideration. My CV is attached.
+
+Warm regards,
+Alex (Hung Yu Zhu)
+BASIS International School Guangzhou
+Grade 11`
+            }
+        ];
+
+        // Render professor cards
+        function renderCards(filter = 'all') {
+            const grid = document.getElementById('cardsGrid');
+            grid.innerHTML = '';
+
+            const filtered = filter === 'all'
+                ? professors
+                : professors.filter(p => p.school.toLowerCase() === filter);
+
+            filtered.forEach((prof, index) => {
+                const schoolClass = `school-${prof.school.toLowerCase()}`;
+                const matchClass = `match-${prof.matchLevel}`;
+
+                const card = document.createElement('div');
+                card.className = `professor-card`;
+                card.dataset.school = prof.school.toLowerCase();
+
+                card.innerHTML = `
+                    <span class="match-score ${matchClass}">${prof.matchLevel === 'high' ? '⭐ High Match' : '✓ Good Match'}</span>
+                    <div class="card-header">
+                        <h3 class="professor-name">${prof.name}</h3>
+                        <p class="professor-title">${prof.title}</p>
+                        <span class="school-badge ${schoolClass}">${prof.school}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <span class="contact-icon">📧</span>
+                                <a href="mailto:${prof.email}">${prof.email}</a>
+                            </div>
+                            ${prof.phone ? `
+                            <div class="contact-item">
+                                <span class="contact-icon">📞</span>
+                                <span>${prof.phone}</span>
+                            </div>` : ''}
+                            <div class="contact-item">
+                                <span class="contact-icon">🔗</span>
+                                <a href="${prof.profileUrl}" target="_blank">Profile Page</a>
+                            </div>
+                            ${prof.googleScholar ? `
+                            <div class="contact-item">
+                                <span class="contact-icon">📚</span>
+                                <a href="${prof.googleScholar}" target="_blank">Google Scholar</a>
+                            </div>` : ''}
+                        </div>
+                        <div class="divider"></div>
+                        <div class="research-section">
+                            <h4>🔬 Research Areas</h4>
+                            <div class="research-tags">
+                                ${prof.researchTags.map(tag => `<span class="research-tag">${tag}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary" onclick="openEmailModal(${index})">📝 View Email Draft</button>
+                        <a href="${prof.profileUrl}" target="_blank" class="btn btn-secondary">🌐 Website</a>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            document.getElementById('totalProfs').textContent = filtered.length;
+        }
+
+        // Filter cards
+        function filterCards(filter) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderCards(filter);
+        }
+
+        // Modal functions
+        let currentProfIndex = 0;
+
+        function openEmailModal(index) {
+            currentProfIndex = index;
+            const prof = professors[index];
+
+            document.getElementById('modalProfName').textContent = `Email to Prof. ${prof.name}`;
+            document.getElementById('modalEmail').textContent = `To: ${prof.email}`;
+            document.getElementById('emailSubject').textContent = prof.subject;
+            document.getElementById('emailBody').textContent = prof.emailBody;
+
+            // Set mailto button
+            const mailtoBtn = document.getElementById('mailtoBtn');
+            const mailtoLink = `mailto:${prof.email}?subject=${encodeURIComponent(prof.subject)}&body=${encodeURIComponent(prof.emailBody)}`;
+            mailtoBtn.onclick = () => window.location.href = mailtoLink;
+
+            document.getElementById('emailModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('emailModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function copyEmail() {
+            const prof = professors[currentProfIndex];
+            const fullEmail = `Subject: ${prof.subject}\n\n${prof.emailBody}`;
+
+            navigator.clipboard.writeText(fullEmail).then(() => {
+                const successMsg = document.getElementById('copySuccess');
+                successMsg.classList.add('show');
+                setTimeout(() => successMsg.classList.remove('show'), 2000);
+            });
+        }
+
+        // Close modal on overlay click
+        document.getElementById('emailModal').addEventListener('click', (e) => {
+            if (e.target.id === 'emailModal') closeModal();
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Initial render
+        renderCards();
+    </script>
+</body>
+
+</html>

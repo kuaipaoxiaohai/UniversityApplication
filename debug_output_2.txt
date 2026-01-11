@@ -1,0 +1,118 @@
+INFO:__main__:Testing yale_dump: https://chem.yale.edu/people/faculty
+INFO:__main__:Page Title: Faculty | Department of Chemistry
+INFO:__main__:Testing princeton_home: https://chemistry.princeton.edu
+INFO:__main__:Page Title: Princeton University Department of Chemistry
+INFO:__main__:Found navigation link: faculty & research -> https://chemistry.princeton.edu/faculty-research/
+INFO:__main__:Found navigation link: faculty -> https://chemistry.princeton.edu/faculty-research/
+INFO:__main__:Found navigation link: faculty & academic jobs -> https://chemistry.princeton.edu/department/faculty-academic-jobs/
+INFO:__main__:Found navigation link: visiting faculty research partnership -> https://chemistry.princeton.edu/visiting-faculty-research-partnership/
+INFO:__main__:Found navigation link: faculty & research -> https://chemistry.princeton.edu/faculty-research/
+INFO:__main__:Found navigation link: faculty -> https://chemistry.princeton.edu/faculty-research/
+INFO:__main__:Found navigation link: faculty & academic jobs -> https://chemistry.princeton.edu/department/faculty-academic-jobs/
+INFO:__main__:Found navigation link: visiting faculty research partnership -> https://chemistry.princeton.edu/visiting-faculty-research-partnership/
+INFO:__main__:Testing uchicago_home: https://chemistry.uchicago.edu
+INFO:__main__:Page Title: | Department of Chemistry | The University of Chicago
+INFO:__main__:Found navigation link: prof. bozhi tian featured in chicago reader's 2025 “people issue 2025” -> /news/prof-bozhi-tian-featured-chicago-readers-2025-people-issue-2025
+INFO:__main__:Found navigation link: faculty -> /faculty
+Dumping Yale Body Start:
+<body class="ys-content-type-page" data-font-pairing="yalenew">
+ <a class="link-skip__link visually-hidden focusable ys-content-type-page" data-font-pairing="yalenew" href="#main-content">
+  Skip to main content
+ </a>
+ <div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas="">
+  <div class="layout-container" data-global-theme="two">
+   <div id="block-alert-block">
+    <section aria-label="announcement" class="alert" data-alert-id="ys-alert-id-1767374746" data-alert-state="expanded" data-alert-type="marketing" data-component-width="site">
+     <div class="alert__inner">
+      <div class="alert__content">
+       <div class="alert__content-inner">
+        <h2 class="alert__heading">
+         Job openings &amp; Holiday closing
+        </h2>
+        <div class="alert__text">
+         We are hiring Assistant Professors in Chemical Biology, Energy Sciences, Physical, or Theoretical Chemistry. The Glass Shop is closed and will reopen on 1/8.
+        </div>
+       </div>
+       <a class="alert__link" data-link-style="underline" data-link-type="internal" href="/about/job-openings">
+        Apply here!
+       </a>
+      </div>
+      <button class="alert__toggle">
+       <span class="visually-hidden">
+        Close alert
+       </span>
+       <svg aria-hidden="true" class="icon" role="img">
+        <use xlink:href="/themes/contrib/atomic/node_modules/@yalesites-org/component-library-twig/dist/icons.svg#xmark">
+        </use>
+       </svg>
+      </button>
+     </div>
+    </section>
+   </div>
+   <header class="site-header" data-component-width="site" data-header-accent="four" data-header-theme="two" data-main-menu-state="loaded" data-site-header-border-thickness="8" data-site-header-nav-position="left">
+    <div class="site-header__inner">
+     <div class="site-header__mobile-header">
+      <a class="site-header__site-branding site-header__site-branding--mobile" data-link-style="underline" data-link-type="internal" href="/">
+       Department of Chemistry
+      </a>
+      <button aria-expanded="false" class="menu-toggle">
+       <span class="menu-toggle__text">
+        Menu
+       </span>
+       <span class="menu-toggle__bars">
+        <span class="menu-toggle__bar">
+        </span>
+        <span class="menu-toggle__bar">
+        </span>
+        <span class="menu-toggle__bar">
+        </span>
+       </span>
+      </button>
+     </div>
+     <div class="site-header__menu-wrapper">
+      <div class="site-header__menu-secondary site-header__menu-secondary--desktop">
+       <div class="site-header__secondary">
+        <a class="site-header__yale-branding" data-link-style="underline" data-link-type="internal" href="https://fas.yale.edu">
+         Yale Faculty of Arts and Sciences
+        </a>
+        <div class="site-header__utility-nav">
+         <div class="utility-bar">
+          <nav aria-label="Utility" class="utility-nav" data-menu-variation="basic">
+           <ul class="utility-nav__menu utility-nav__menu--level-0">
+            <li class="utility-nav__item utility-nav__item--level-0">
+             <a class="utility-nav__link utility-nav__link--level-0" data-link-style="underline" data-link-type="internal" href="/news">
+              News
+             </a>
+            </li>
+            <li class="utility-nav__item utility-nav__item--level-0">
+             <a class="utility-nav__link utility-nav__link--level-0" data-link-style="underline" data-link-type="internal" href="/events">
+              Events
+             </a>
+            </li>
+            <li class="utility-nav__item utility-nav__item--level-0">
+             <a class="utility-nav__link utility-nav__link--level-0" data-link-style="underline" data-link-type="internal" href="/giving">
+              Giving
+             </a>
+            </li>
+           </ul>
+          </nav>
+          <div class="utility-nav__search">
+           <form accept-charset="UTF-8" action="/search" class="form--inline" id="header-search-form-desktop" method="get">
+            <div class="form-item form-item-keywords">
+             <label for="edit-keywords--header-search-form-desktop">
+              <svg aria-hidden="true" class="utility-nav__icon utility-nav__icon--search" role="img">
+               <use xlink:href="/themes/contrib/atomic/node_modules/@yalesites-org/component-library-twig/dist/icons.svg#magnifying-glass">
+               </use>
+              </svg>
+              <span class="visually-hidden">
+               Search
+              </span>
+             </label>
+             <input class="form-text" id="edit-keywords--header-search-form-desktop" maxlength="128" name="keywords" placeholder="Search this site" size="30" type="text" value=""/>
+            </div>
+            <div class="form-actions form-wrapper" id="edit-actions--header-search-form-desktop">
+             <input class="visually-hidden button form-submit" id="edit-submit-search--header-search-form-desktop" type="submit" value="Search"/>
+            </div>
+           </form>
+          </div>
+         </

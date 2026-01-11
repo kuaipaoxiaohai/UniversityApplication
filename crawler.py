@@ -17,12 +17,13 @@ Output:
 
 import requests
 from bs4 import BeautifulSoup
-import pandas as pd
+import csv
 import json
 import time
 import random
 import re
 import logging
+import os
 from typing import List, Dict, Optional
 from urllib.parse import urljoin, urlparse
 
@@ -80,10 +81,36 @@ INVALID_NAMES = [
 
 # Target URLs
 TARGET_URLS = {
+    # Stanford & MIT (existing)
     "stanford_cheme": "https://cheme.stanford.edu/people/faculty",
     "stanford_mse": "https://mse.stanford.edu/people/faculty",
     "stanford_doerr": "https://sustainability.stanford.edu/our-community/faculty-0",
-    "mit_dmse": "https://dmse.mit.edu/people/faculty/"
+    "mit_dmse": "https://dmse.mit.edu/people/faculty/",
+    
+    # Harvard
+    "harvard_chemistry": "https://chemistry.harvard.edu/people",
+    "harvard_seas": "https://seas.harvard.edu/people?role=Faculty",
+    
+    # Yale
+    "yale_chemistry": "https://chem.yale.edu/people/faculty",
+    
+    # Princeton
+    "princeton_chemistry": "https://chemistry.princeton.edu/faculty-research/",
+    
+    # University of Chicago - Use physical chemistry page which lists faculty
+    "uchicago_chemistry": "https://chemistry.uchicago.edu/research/physical",
+    
+    # Northwestern
+    "northwestern_chemistry": "https://chemistry.northwestern.edu/people/faculty/index.html",
+    "northwestern_mse": "https://www.mccormick.northwestern.edu/materials-science/people/faculty/",
+    
+    # UC Berkeley
+    "berkeley_chemistry": "https://chemistry.berkeley.edu/people/faculty",
+    "berkeley_cbe": "https://chemistry.berkeley.edu/people/cbe-faculty",
+    
+    # Caltech - use faculty subdirectory
+    "caltech_cce": "https://www.cce.caltech.edu/faculty",
+    "caltech_materials": "https://www.cms.caltech.edu/people"
 }
 
 
@@ -105,25 +132,45 @@ class FacultyCrawler:
         })
         self.faculty_manifest: List[Dict] = []
         self.faculty_data: List[Dict] = []
+        
+        # Load existing data if available
+        self.load_existing_data()
     
-    def polite_request(self, url: str, timeout: int = 10) -> Optional[requests.Response]:
+    def load_existing_data(self):
+        """Load existing faculty data to prevent data loss."""
+        try:
+            if os.path.exists('faculty_data.json'):
+                with open('faculty_data.json', 'r', encoding='utf-8') as f:
+                    self.faculty_data = json.load(f)
+                logger.info(f"Loaded {len(self.faculty_data)} existing faculty entries.")
+        except Exception as e:
+            logger.error(f"Error loading existing data: {e}")
+    
+    def polite_request(self, url: str, timeout: int = 10, headers: Dict = None) -> Optional[requests.Response]:
         """
         Make a polite HTTP request with random delay (1-3 seconds).
         
         Args:
             url: The URL to request
             timeout: Request timeout in seconds
+            headers: Optional headers to override/merge with session headers
             
         Returns:
             Response object or None if request failed
         """
         time.sleep(random.uniform(1, 3))
+        
         try:
-            response = self.session.get(url, timeout=timeout)
+            # Prepare arguments
+            kwargs = {'timeout': timeout}
+            if headers:
+                kwargs['headers'] = headers
+                
+            response = self.session.get(url, **kwargs)
             response.raise_for_status()
             return response
-        except requests.RequestException as e:
-            logger.error(f"Request failed for {url}: {e}")
+        except Exception as e:
+            logger.error(f"Error fetching {url}: {e}")
             return None
     
     def is_valid_name(self, name: str) -> bool:
@@ -212,7 +259,7 @@ class FacultyCrawler:
         if not response:
             return []
         
-        soup = BeautifulSoup(response.text, 'lxml')
+        soup = BeautifulSoup(response.text, 'html.parser')
         faculty_list = []
         
         # Stanford department pages group faculty under h2 headers by title
@@ -296,7 +343,7 @@ class FacultyCrawler:
             if not response:
                 break
             
-            soup = BeautifulSoup(response.text, 'lxml')
+            soup = BeautifulSoup(response.text, 'html.parser')
             
             page_faculty = []
             
@@ -405,7 +452,7 @@ class FacultyCrawler:
         if not response:
             return []
         
-        soup = BeautifulSoup(response.text, 'lxml')
+        soup = BeautifulSoup(response.text, 'html.parser')
         faculty_list = []
         
         # MIT DMSE has faculty listed in a grid/list format
@@ -468,6 +515,587 @@ class FacultyCrawler:
         logger.info(f"Found {len(unique_faculty)} faculty from MIT DMSE")
         return unique_faculty
     
+    def scrape_harvard_chemistry(self) -> List[Dict]:
+        """
+        Scrape Harvard Chemistry and Chemical Biology faculty page.
+        
+        Returns:
+            List of faculty dictionaries
+        """
+        logger.info("Scraping Harvard Chemistry faculty list...")
+        
+        url = TARGET_URLS["harvard_chemistry"]
+        response = self.polite_request(url)
+        
+        if not response:
+            return []
+        
+        soup = BeautifulSoup(response.text, 'html.parser')
+        faculty_list = []
+        
+        # Harvard CCB lists all people, need to filter for faculty
+        # New selector based on search-page__result-items container
+        people_container = soup.find('div', class_='search-page__result-items')
+        
+        people_items = []
+        if people_container:
+            # Iterate over direct children or find all cards
+            # The cards seem to be div.search-page__result-items > div
+            people_items = people_container.find_all('div', recursive=False)
+            if not people_items:
+                 # Fallback deep search
+                 people_items = people_container.find_all('div', class_='page-card__text')
+        else:
+            # Fallback to old selectors just in case
+            people_items = soup.find_all(['div', 'li'], class_=lambda x: x and ('person' in x.lower() or 'views-row' in x.lower()) if x else False)
+
+        for item in people_items:
+            # Name extraction
+            name_elem = item.find(['h2', 'h3', 'h4', 'div'], class_=lambda x: x and ('title' in x.lower() or 'name' in x.lower() or 'heading' in x.lower()) if x else False)
+            if not name_elem:
+                 name_elem = item.find('a')
+            
+            # Additional check for Harvard specific class
+            if not name_elem:
+                name_elem = item.find(class_='page-card__title')
+            
+            if not name_elem:
+                continue
+
+            name = name_elem.get_text(strip=True)
+            href = name_elem.get('href', '')
+            if not href and name_elem.name == 'a':
+                href = name_elem['href']
+            elif not href:
+                 link = item.find('a', href=True)
+                 href = link.get('href', '') if link else ''
+            
+            # Check title to ensure it's a professor/faculty
+            title = ""
+            title_elem = item.find(['div', 'p'], class_=lambda x: x and ('field-name-field-person-title' in x or 'title' in x or 'job-title' in x) if x else False)
+            
+            # Specific Harvard class from debug
+            if not title_elem:
+                 title_elem = item.find(class_='field--name-field-hwp-person-prof-title')
+
+            if title_elem:
+                title = title_elem.get_text(strip=True)
+            
+            # Filter for Professor titles but also accept empty titles if likely faculty (weak check)
+            # Better to be strict: must have "Professor" or "Faculty"
+            if not title:
+                title = "Professor"
+
+            if "Professor" not in title and "Faculty" not in title and "Lecturer" not in title and "Chair" not in title:
+                 continue
+            
+            if not self.is_valid_name(name):
+                continue
+            
+            profile_url = urljoin(url, href) if href else url
+            
+            faculty_list.append({
+                'name': name,
+                'title': title,
+                'profile_url': profile_url,
+                'department_source': url
+            })
+        
+        # Remove duplicates
+        seen_names = set()
+        unique_faculty = []
+        for f in faculty_list:
+            name_key = f['name'].lower().strip()
+            if name_key not in seen_names and self.is_valid_name(f['name']):
+                seen_names.add(name_key)
+                unique_faculty.append(f)
+        
+        logger.info(f"Found {len(unique_faculty)} faculty from Harvard Chemistry")
+        return unique_faculty
+    
+    def scrape_harvard_seas(self) -> List[Dict]:
+        """
+        Scrape Harvard SEAS faculty page.
+        
+        Returns:
+            List of faculty dictionaries
+        """
+        logger.info("Scraping Harvard SEAS faculty list...")
+        
+        url = TARGET_URLS["harvard_seas"]
+        response = self.polite_request(url)
+        
+        if not response:
+            return []
+        
+        soup = BeautifulSoup(response.text, 'html.parser')
+        faculty_list = []
+        
+        # SEAS has a people directory with faculty cards
+        faculty_cards = soup.find_all(['article', 'div'], class_=lambda x: x and ('person' in x.lower() or 'faculty' in x.lower() or 'card' in x.lower()) if x else False)
+        
+        if not faculty_cards:
+            faculty_cards = soup.find_all('a', href=lambda x: x and '/people/' in x if x else False)
+        
+        for card in faculty_cards:
+            if card.name == 'a':
+                name = card.get_text(strip=True)
+                href = card.get('href', '')
+            else:
+                name_elem = card.find(['h2', 'h3', 'h4', 'a'])
+                name = name_elem.get_text(strip=True) if name_elem else ''
+                link = card.find('a', href=True)
+                href = link.get('href', '') if link else ''
+            
+            if not self.is_valid_name(name):
+                continue
+            
+            title = "Professor"
+            title_elem = card.find(['p', 'span'], class_=lambda x: x and 'title' in x.lower() if x else False)
+            if title_elem:
+                title = title_elem.get_text(strip=True)
+            
+            profile_url = urljoin(url, href) if href else url
+            
+            faculty_list.append({
+                'name': name,
+                'title': title,
+                'profile_url': profile_url,
+                'department_source': url
+            })
+        
+        # Remove duplicates
+        seen_names = set()
+        unique_faculty = []
+        for f in faculty_list:
+            name_key = f['name'].lower().strip()
+            if name_key not in seen_names and self.is_valid_name(f['name']):
+                seen_names.add(name_key)
+                unique_faculty.append(f)
+        
+        logger.info(f"Found {len(unique_faculty)} faculty from Harvard SEAS")
+        return unique_faculty
+    
+    def scrape_yale_chemistry(self) -> List[Dict]:
+        """
+        Scrape Yale Chemistry faculty page.
+        
+        Returns:
+            List of faculty dictionaries
+        """
+        logger.info("Scraping Yale Chemistry faculty list...")
+        
+        url = TARGET_URLS["yale_chemistry"]
+        response = self.polite_request(url)
+        
+        if not response:
+            return []
+        
+        soup = BeautifulSoup(response.text, 'html.parser')
+        faculty_list = []
+        
+        # Yale has 53 profile-like links - extract faculty from these
+        profile_links = soup.find_all('a', href=lambda x: x and ('/people/' in x or '/faculty/' in x) if x else False)
+        
+        for link in profile_links:
+            name = link.get_text(strip=True)
+            href = link.get('href', '')
+            
+            # Skip navigation/category links
+            if not name or len(name) < 3 or name.lower() in ['faculty', 'people', 'primary faculty', 'emeriti', 'lecturers', 'secondary appointments']:
+                continue
+                
+            if not self.is_valid_name(name):
+                continue
+            
+            # Try to get title from parent or sibling elements
+            title = "Professor"
+            parent = link.find_parent(['div', 'article', 'li'])
+            if parent:
+                title_elem = parent.find(['p', 'span', 'div'], class_=lambda x: x and ('title' in x.lower() or 'position' in x.lower()) if x else False)
+                if title_elem:
+                    title = title_elem.get_text(strip=True)
+            
+            profile_url = urljoin(url, href) if href else url
+            
+            faculty_list.append({
+                'name': name,
+                'title': title,
+                'profile_url': profile_url,
+                'department_source': url
+            })
+        
+        # Remove duplicates
+        seen_names = set()
+        unique_faculty = []
+        for f in faculty_list:
+            name_key = f['name'].lower().strip()
+            if name_key not in seen_names and self.is_valid_name(f['name']):
+                seen_names.add(name_key)
+                unique_faculty.append(f)
+        
+        logger.info(f"Found {len(unique_faculty)} faculty from Yale Chemistry")
+        return unique_faculty
+    
+    def scrape_princeton_chemistry(self) -> List[Dict]:
+        """
+        Scrape Princeton Chemistry faculty page.
+        
+        Returns:
+            List of faculty dictionaries
+        """
+        logger.info("Scraping Princeton Chemistry faculty list...")
+        
+        url = TARGET_URLS["princeton_chemistry"]
+        # Use Googlebot UA to ensure static HTML is returned
+        headers = {'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'}
+        response = self.polite_request(url, headers=headers)
+        
+        if not response:
+            return []
+        
+        soup = BeautifulSoup(response.text, 'html.parser')
+        faculty_list = []
+        
+        # Princeton has 124 profile-like links - extract faculty from these
+        profile_links = soup.find_all('a', href=lambda x: x and ('/people/' in x or '/faculty/' in x) if x else False)
+        
+        for link in profile_links:
+            name = link.get_text(strip=True)
+            href = link.get('href', '')
+            
+            # Skip navigation/category links and short names
+            if not name or len(name) < 4:
+                continue
+            
+            # Skip common navigation text
+            skip_texts = ['faculty', 'people', 'research', 'home', 'about', 'contact', 'news']
+            if name.lower() in skip_texts:
+                continue
+                
+            if not self.is_valid_name(name):
+                continue
+            
+            # Try to get title from parent elements
+            title = "Professor"
+            parent = link.find_parent(['div', 'article', 'li'])
+            if parent:
+                # Look for title in parent text
+                parent_text = parent.get_text(separator='|')
+                for part in parent_text.split('|'):
+                    if 'Professor' in part and len(part) < 60:
+                        title = part.strip()
+                        break
+            
+            profile_url = urljoin(url, href) if href else url
+            
+            faculty_list.append({
+                'name': name,
+                'title': title,
+                'profile_url': profile_url,
+                'department_source': url
+            })
+        
+        # Remove duplicates
+        seen_names = set()
+        unique_faculty = []
+        for f in faculty_list:
+            name_key = f['name'].lower().strip()
+            if name_key not in seen_names and self.is_valid_name(f['name']):
+                seen_names.add(name_key)
+                unique_faculty.append(f)
+        
+        logger.info(f"Found {len(unique_faculty)} faculty from Princeton Chemistry")
+        return unique_faculty
+    
+    def scrape_uchicago_chemistry(self) -> List[Dict]:
+        """
+        Scrape University of Chicago Chemistry faculty page.
+        
+        Returns:
+            List of faculty dictionaries
+        """
+        logger.info("Scraping UChicago Chemistry faculty list...")
+        
+        url = TARGET_URLS["uchicago_chemistry"]
+        # Use Googlebot UA
+        headers = {'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'}
+        response = self.polite_request(url, headers=headers)
+        
+        if not response:
+            return []
+        
+        soup = BeautifulSoup(response.text, 'html.parser')
+        faculty_list = []
+        
+        # Find all links to faculty profiles (relative paths often contain /directory/)
+        profile_links = soup.find_all('a', href=lambda x: x and ('/directory/' in x or '/people/' in x or '/profile/' in x) if x else False)
+        
+        if not profile_links:
+            # Fallback: Find links with faculty-like names visible in page
+            profile_links = soup.find_all('a', href=True)
+        
+        for link in profile_links:
+            name = link.get_text(strip=True)
+            href = link.get('href', '')
+            
+            # Skip short text or navigation links
+            if not name or len(name) < 4 or len(name) > 50:
+                continue
+            
+            # Skip common navigation text
+            skip_texts = ['faculty', 'people', 'research', 'home', 'about', 'contact', 'news', 'read more', 'learn more']
+            if name.lower() in skip_texts or any(skip in name.lower() for skip in skip_texts):
+                continue
+                
+            if not self.is_valid_name(name):
+                continue
+            
+            # Get title from parent text if available
+            title = "Professor"
+            parent = link.find_parent(['div', 'p', 'li'])
+            if parent:
+                parent_text = parent.get_text(separator='|')
+                for part in parent_text.split('|'):
+                    if 'Professor' in part and len(part) < 80:
+                        title = part.strip()
+                        break
+            
+            profile_url = urljoin(url, href) if href else url
+            
+            faculty_list.append({
+                'name': name,
+                'title': title,
+                'profile_url': profile_url,
+                'department_source': url
+            })
+        
+        # Remove duplicates
+        seen_names = set()
+        unique_faculty = []
+        for f in faculty_list:
+            name_key = f['name'].lower().strip()
+            if name_key not in seen_names and self.is_valid_name(f['name']):
+                seen_names.add(name_key)
+                unique_faculty.append(f)
+        
+        logger.info(f"Found {len(unique_faculty)} faculty from UChicago Chemistry")
+        return unique_faculty
+    
+    def scrape_northwestern_department(self, url: str, department_name: str) -> List[Dict]:
+        """
+        Scrape Northwestern department faculty page.
+        
+        Args:
+            url: Faculty listing page URL
+            department_name: Name for logging
+            
+        Returns:
+            List of faculty dictionaries
+        """
+        logger.info(f"Scraping {department_name} faculty list...")
+        
+        # Use Googlebot UA
+        headers = {'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'}
+        response = self.polite_request(url, headers=headers)
+        
+        if not response:
+            return []
+        
+        soup = BeautifulSoup(response.text, 'html.parser')
+        faculty_list = []
+        
+        # Northwestern has 54 "Professor" mentions - find elements containing these
+        # Look for all text nodes containing "Professor" and extract faculty from parents
+        prof_elements = soup.find_all(string=lambda t: t and 'Professor' in t and len(t) < 100)
+        
+        seen_parents = set()
+        for prof_text in prof_elements:
+            # Find containing element
+            parent = prof_text.find_parent(['div', 'article', 'li', 'tr'])
+            if not parent or parent in seen_parents:
+                continue
+            seen_parents.add(parent)
+            
+            # Find name - usually in a heading or strong link
+            name_elem = parent.find(['h2', 'h3', 'h4', 'strong', 'a'])
+            if not name_elem:
+                continue
+            
+            name = name_elem.get_text(strip=True)
+            if not self.is_valid_name(name):
+                continue
+            
+            # Get profile link
+            href = ''
+            link = parent.find('a', href=True)
+            if link:
+                href = link.get('href', '')
+            
+            # Get title from text
+            title = str(prof_text).strip() if prof_text else "Professor"
+            
+            profile_url = urljoin(url, href) if href else url
+            
+            faculty_list.append({
+                'name': name,
+                'title': title,
+                'profile_url': profile_url,
+                'department_source': url
+            })
+        
+        # Remove duplicates
+        seen_names = set()
+        unique_faculty = []
+        for f in faculty_list:
+            name_key = f['name'].lower().strip()
+            if name_key not in seen_names and self.is_valid_name(f['name']):
+                seen_names.add(name_key)
+                unique_faculty.append(f)
+        
+        logger.info(f"Found {len(unique_faculty)} faculty from {department_name}")
+        return unique_faculty
+    
+    def scrape_berkeley_department(self, url: str, department_name: str) -> List[Dict]:
+        """
+        Scrape UC Berkeley College of Chemistry faculty page.
+        
+        Args:
+            url: Faculty listing page URL
+            department_name: Name for logging
+            
+        Returns:
+            List of faculty dictionaries
+        """
+        logger.info(f"Scraping {department_name} faculty list...")
+        
+        # Use Googlebot UA
+        headers = {'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'}
+        response = self.polite_request(url, headers=headers)
+        
+        if not response:
+            return []
+        
+        soup = BeautifulSoup(response.text, 'html.parser')
+        faculty_list = []
+        
+        # Berkeley has 30 profile-like links per department - extract from these
+        profile_links = soup.find_all('a', href=lambda x: x and ('/people/' in x or '/faculty/' in x or '/profile/' in x) if x else False)
+        
+        for link in profile_links:
+            name = link.get_text(strip=True)
+            href = link.get('href', '')
+            
+            # Skip navigation links and short names
+            if not name or len(name) < 4:
+                continue
+            
+            # Skip common navigation text
+            skip_texts = ['faculty', 'people', 'chemistry faculty', 'cbe faculty', 'meet the', 'research', 'home']
+            if any(skip in name.lower() for skip in skip_texts):
+                continue
+                
+            if not self.is_valid_name(name):
+                continue
+            
+            # Try to get title from parent elements
+            title = "Professor"
+            parent = link.find_parent(['div', 'article', 'li'])
+            if parent:
+                # Look for Professor in parent text
+                parent_text = parent.get_text(separator='|')
+                for part in parent_text.split('|'):
+                    if 'Professor' in part and len(part) < 60:
+                        title = part.strip()
+                        break
+            
+            profile_url = urljoin(url, href) if href else url
+            
+            faculty_list.append({
+                'name': name,
+                'title': title,
+                'profile_url': profile_url,
+                'department_source': url
+            })
+        
+        # Remove duplicates
+        seen_names = set()
+        unique_faculty = []
+        for f in faculty_list:
+            name_key = f['name'].lower().strip()
+            if name_key not in seen_names and self.is_valid_name(f['name']):
+                seen_names.add(name_key)
+                unique_faculty.append(f)
+        
+        logger.info(f"Found {len(unique_faculty)} faculty from {department_name}")
+        return unique_faculty
+    
+    def scrape_caltech_department(self, url: str, department_name: str) -> List[Dict]:
+        """
+        Scrape Caltech department faculty page.
+        
+        Args:
+            url: Faculty listing page URL
+            department_name: Name for logging
+            
+        Returns:
+            List of faculty dictionaries
+        """
+        logger.info(f"Scraping {department_name} faculty list...")
+        
+        response = self.polite_request(url)
+        
+        if not response:
+            return []
+        
+        soup = BeautifulSoup(response.text, 'html.parser')
+        faculty_list = []
+        
+        # Caltech faculty listings
+        faculty_items = soup.find_all(['article', 'div', 'li'], class_=lambda x: x and ('faculty' in x.lower() or 'person' in x.lower() or 'profile' in x.lower() or 'card' in x.lower()) if x else False)
+        
+        if not faculty_items:
+            faculty_items = soup.find_all('a', href=lambda x: x and ('/people/' in x or '/directory/' in x) if x else False)
+        
+        for item in faculty_items:
+            if item.name == 'a':
+                name = item.get_text(strip=True)
+                href = item.get('href', '')
+            else:
+                name_elem = item.find(['h2', 'h3', 'h4', 'a'])
+                name = name_elem.get_text(strip=True) if name_elem else ''
+                link = item.find('a', href=True)
+                href = link.get('href', '') if link else ''
+            
+            if not self.is_valid_name(name):
+                continue
+            
+            title = "Professor"
+            title_elem = item.find(['p', 'span', 'div'], class_=lambda x: x and ('title' in x.lower() or 'position' in x.lower()) if x else False)
+            if title_elem:
+                title = title_elem.get_text(strip=True)
+            
+            profile_url = urljoin(url, href) if href else url
+            
+            faculty_list.append({
+                'name': name,
+                'title': title,
+                'profile_url': profile_url,
+                'department_source': url
+            })
+        
+        # Remove duplicates
+        seen_names = set()
+        unique_faculty = []
+        for f in faculty_list:
+            name_key = f['name'].lower().strip()
+            if name_key not in seen_names and self.is_valid_name(f['name']):
+                seen_names.add(name_key)
+                unique_faculty.append(f)
+        
+        logger.info(f"Found {len(unique_faculty)} faculty from {department_name}")
+        return unique_faculty
+    
     def run_stage1(self) -> List[Dict]:
         """
         Run Stage 1: Collect faculty manifests from all target URLs.
@@ -502,6 +1130,66 @@ class FacultyCrawler:
         # MIT DMSE
         mit_faculty = self.scrape_mit_dmse()
         all_faculty.extend(mit_faculty)
+        
+        # ==================== New Universities ====================
+        
+        # Harvard
+        harvard_chem_faculty = self.scrape_harvard_chemistry()
+        all_faculty.extend(harvard_chem_faculty)
+        
+        harvard_seas_faculty = self.scrape_harvard_seas()
+        all_faculty.extend(harvard_seas_faculty)
+        
+        # Yale
+        yale_faculty = self.scrape_yale_chemistry()
+        all_faculty.extend(yale_faculty)
+        
+        # Princeton
+        princeton_faculty = self.scrape_princeton_chemistry()
+        all_faculty.extend(princeton_faculty)
+        
+        # UChicago
+        uchicago_faculty = self.scrape_uchicago_chemistry()
+        all_faculty.extend(uchicago_faculty)
+        
+        # Northwestern
+        northwestern_chem = self.scrape_northwestern_department(
+            TARGET_URLS["northwestern_chemistry"],
+            "Northwestern Chemistry"
+        )
+        all_faculty.extend(northwestern_chem)
+        
+        northwestern_mse = self.scrape_northwestern_department(
+            TARGET_URLS["northwestern_mse"],
+            "Northwestern Materials Science"
+        )
+        all_faculty.extend(northwestern_mse)
+        
+        # UC Berkeley
+        berkeley_chem = self.scrape_berkeley_department(
+            TARGET_URLS["berkeley_chemistry"],
+            "UC Berkeley Chemistry"
+        )
+        all_faculty.extend(berkeley_chem)
+        
+        berkeley_cbe = self.scrape_berkeley_department(
+            TARGET_URLS["berkeley_cbe"],
+            "UC Berkeley Chemical & Biomolecular Engineering"
+        )
+        all_faculty.extend(berkeley_cbe)
+        
+        # Caltech
+        caltech_cce = self.scrape_caltech_department(
+            TARGET_URLS["caltech_cce"],
+            "Caltech Chemistry & Chemical Engineering"
+        )
+        all_faculty.extend(caltech_cce)
+        
+        caltech_materials = self.scrape_caltech_department(
+            TARGET_URLS["caltech_materials"],
+            "Caltech Materials Science"
+        )
+        all_faculty.extend(caltech_materials)
         
         logger.info(f"Stage 1 complete: Found {len(all_faculty)} total faculty entries")
         
@@ -845,7 +1533,7 @@ class FacultyCrawler:
         if not response:
             return profile_data
         
-        soup = BeautifulSoup(response.text, 'lxml')
+        soup = BeautifulSoup(response.text, 'html.parser')
         
         # Check if redirected to profiles.stanford.edu
         final_url = response.url
@@ -858,7 +1546,7 @@ class FacultyCrawler:
             profiles_url = stanford_profile_link.get('href')
             profiles_response = self.polite_request(profiles_url)
             if profiles_response:
-                soup = BeautifulSoup(profiles_response.text, 'lxml')
+                soup = BeautifulSoup(profiles_response.text, 'html.parser')
                 final_url = profiles_response.url
         
         # Extract all information
@@ -896,7 +1584,7 @@ class FacultyCrawler:
         if not response:
             return profile_data
         
-        soup = BeautifulSoup(response.text, 'lxml')
+        soup = BeautifulSoup(response.text, 'html.parser')
         
         # Extract all information
         profile_data['email'] = self.extract_email(soup)
@@ -932,6 +1620,9 @@ class FacultyCrawler:
                 profile_info = self.scrape_stanford_profile(profile_url)
             elif 'mit.edu' in profile_url:
                 profile_info = self.scrape_mit_profile(profile_url)
+            elif any(u in profile_url for u in ['harvard.edu', 'yale.edu', 'princeton.edu', 'uchicago.edu', 'northwestern.edu', 'berkeley.edu', 'caltech.edu']):
+                # Use generic scraper for new universities
+                profile_info = self.scrape_generic_profile(profile_url)
             else:
                 profile_info = {}
             
@@ -940,6 +1631,45 @@ class FacultyCrawler:
             self.faculty_data.append(complete_faculty)
         
         logger.info(f"Stage 2 complete: Scraped {len(self.faculty_data)} faculty profiles")
+
+    def scrape_generic_profile(self, profile_url: str) -> Dict:
+        """
+        Generic scraper for faculty profiles from standard university websites.
+        
+        Args:
+            profile_url: URL to the faculty's profile page
+            
+        Returns:
+            Dictionary with detailed faculty info
+        """
+        profile_data = {
+            'email': '',
+            'phone': '',
+            'lab_website': '',
+            'google_scholar': '',
+            'top_publications': [],
+            'assistant_email': '',
+            'research_interests': []
+        }
+        
+        response = self.polite_request(profile_url)
+        if not response:
+            return profile_data
+        
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # Extract all information using existing extraction methods
+        profile_data['email'] = self.extract_email(soup)
+        profile_data['phone'] = self.extract_phone(soup)
+        # Pass profile_url as base_url
+        profile_data['lab_website'] = self.extract_lab_website(soup, profile_url)
+        profile_data['google_scholar'] = self.extract_google_scholar(soup)
+        profile_data['top_publications'] = self.extract_publications(soup)
+        # assistant_email extraction might be specific, but try anyway
+        profile_data['assistant_email'] = self.extract_assistant_email(soup)
+        profile_data['research_interests'] = self.extract_research_interests(soup, profile_url)
+        
+        return profile_data
     
     # ==================== Deduplication & Output ====================
     
@@ -959,34 +1689,52 @@ class FacultyCrawler:
             name = faculty.get('name', '').lower().strip()
             if not name:
                 continue
-            
+                
             if name not in name_to_entries:
                 name_to_entries[name] = []
             name_to_entries[name].append(faculty)
-        
-        # For duplicates, merge and keep most complete
+            
         deduplicated = []
-        
         for name, entries in name_to_entries.items():
             if len(entries) == 1:
                 deduplicated.append(entries[0])
             else:
-                # Merge entries
-                merged = entries[0].copy()
+                # Merge entries to keep the best data
+                # Sort entries by "quality" (has email, phone, etc) descending
+                def score_entry(e):
+                    score = 0
+                    if e.get('email'): score += 10
+                    if e.get('phone'): score += 5
+                    if e.get('top_publications'): score += 3
+                    if e.get('research_interests'): score += len(e.get('research_interests', []))
+                    if 'stanford.edu' in e.get('email', '') or 'mit.edu' in e.get('email', ''): score += 2
+                    return score
+                
+                sorted_entries = sorted(entries, key=score_entry, reverse=True)
+                merged = sorted_entries[0].copy()
                 
                 # Collect all department sources
-                all_sources = [e.get('department_source', '') for e in entries]
-                merged['department_sources'] = list(set(filter(None, all_sources)))
+                all_sources = []
+                for e in entries:
+                     src = e.get('department_source', '')
+                     if src:
+                         all_sources.append(src)
+                     if e.get('department_sources'):
+                         all_sources.extend(e.get('department_sources'))
                 
-                # Take the most complete data for each field
-                for entry in entries[1:]:
+                merged['department_sources'] = list(set(all_sources))
+                
+                # If the best entry is missing something that others have, fill it
+                for entry in sorted_entries[1:]:
                     for key, value in entry.items():
-                        if key == 'department_source':
+                        if key in ['department_source', 'department_sources']:
                             continue
+                        # If merged is missing val, take from others
                         if value and not merged.get(key):
-                            merged[key] = value
-                        elif isinstance(value, list) and len(value) > len(merged.get(key, [])):
-                            merged[key] = value
+                             merged[key] = value
+                        # If merged has empty list and others have list, take it
+                        elif isinstance(value, list) and value and not merged.get(key):
+                             merged[key] = value
                 
                 deduplicated.append(merged)
         
@@ -1003,35 +1751,52 @@ class FacultyCrawler:
         """
         logger.info(f"Saving data to {filename}...")
         
-        # Flatten data for CSV
+        if not self.faculty_data:
+            logger.warning("No data to save.")
+            return
+
+        # Prepare data for CSV
         flat_data = []
         for faculty in self.faculty_data:
             flat = faculty.copy()
             
             # Convert lists to strings
             if 'top_publications' in flat:
-                flat['top_publications'] = ' | '.join(flat['top_publications'])
+                if isinstance(flat['top_publications'], list):
+                    flat['top_publications'] = ' | '.join(flat['top_publications'])
             if 'department_sources' in flat:
-                flat['department_sources'] = ', '.join(flat['department_sources'])
+                 if isinstance(flat['department_sources'], list):
+                    flat['department_sources'] = ', '.join(flat['department_sources'])
+            if 'research_interests' in flat:
+                if isinstance(flat['research_interests'], list):
+                    flat['research_interests'] = ', '.join(flat['research_interests'])
             
             flat_data.append(flat)
         
-        df = pd.DataFrame(flat_data)
-        
+        # Determine columns
+        all_keys = set()
+        for item in flat_data:
+            all_keys.update(item.keys())
+            
         # Reorder columns
         preferred_order = [
             'name', 'title', 'department_source', 'department_sources',
             'email', 'phone', 'assistant_email', 
             'profile_url', 'lab_website', 'google_scholar',
-            'top_publications'
+            'top_publications', 'research_interests'
         ]
         
-        columns = [c for c in preferred_order if c in df.columns]
-        columns += [c for c in df.columns if c not in columns]
-        df = df[columns]
+        columns = [c for c in preferred_order if c in all_keys]
+        columns += [c for c in all_keys if c not in columns]
         
-        df.to_csv(filename, index=False, encoding='utf-8-sig')
-        logger.info(f"CSV saved: {filename}")
+        try:
+            with open(filename, 'w', newline='', encoding='utf-8-sig') as f:
+                writer = csv.DictWriter(f, fieldnames=columns)
+                writer.writeheader()
+                writer.writerows(flat_data)
+            logger.info(f"CSV saved: {filename}")
+        except Exception as e:
+            logger.error(f"Error saving CSV: {e}")
     
     def save_json(self, filename: str = "faculty_data.json"):
         """

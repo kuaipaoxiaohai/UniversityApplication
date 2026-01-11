@@ -1,0 +1,96 @@
+INFO:__main__:Testing princeton_test: https://chemistry.princeton.edu/people
+ERROR:__main__:Failed to fetch https://chemistry.princeton.edu/people: 404 Client Error: Not Found for url: https://chemistry.princeton.edu/people
+INFO:__main__:Testing princeton_test: https://chemistry.princeton.edu/people/faculty-leadership
+ERROR:__main__:Failed to fetch https://chemistry.princeton.edu/people/faculty-leadership: 404 Client Error: Not Found for url: https://chemistry.princeton.edu/people/faculty-leadership
+INFO:__main__:Testing uchicago_test: https://chemistry.uchicago.edu/people
+ERROR:__main__:Failed to fetch https://chemistry.uchicago.edu/people: 404 Client Error: Not Found for url: https://chemistry.uchicago.edu/people
+INFO:__main__:Testing uchicago_test: https://chemistry.uchicago.edu/people/faculty
+ERROR:__main__:Failed to fetch https://chemistry.uchicago.edu/people/faculty: 404 Client Error: Not Found for url: https://chemistry.uchicago.edu/people/faculty
+INFO:__main__:Testing yale_test: https://chem.yale.edu/people/faculty
+INFO:__main__:Page Title: Faculty | Department of Chemistry
+INFO:__main__:Found 0 potential faculty elements
+INFO:__main__:Testing yale_test: https://chem.yale.edu/people
+INFO:__main__:Page Title: People | Department of Chemistry
+INFO:__main__:Found 0 potential faculty elements
+No faculty content found. Body start:
+<body class="ys-content-type-page" data-font-pairing="yalenew">
+ <a class="link-skip__link visually-hidden focusable ys-content-type-page" data-font-pairing="yalenew" href="#main-content">
+  Skip to main content
+ </a>
+ <div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas="">
+  <div class="layout-container" data-global-theme="two">
+   <div id="block-alert-block">
+    <section aria-label="announcement" class="alert" data-alert-id="ys-alert-id-1767374746" data-alert-state="expanded" data-alert-type="marketing" data-component-width="site">
+     <div class="alert__inner">
+      <div class="alert__content">
+       <div class="alert__content-inner">
+        <h2 class="alert__heading">
+         Job openings &amp; Holiday closing
+        </h2>
+        <div class="alert__text">
+         We are hiring Assistant Professors in Chemical Biology, Energy Sciences, Physical, or Theoretical Chemistry. The Glass Shop is closed and will reopen on 1/8.
+        </div>
+       </div>
+       <a class="alert__link" data-link-style="underline" data-link-type="internal" href="/about/job-openings">
+        Apply here!
+       </a>
+      </div>
+      <button class="alert__toggle">
+       <span class="visually-hidden">
+        Close alert
+       </span>
+       <svg aria-hidden="true" class="icon" role="img">
+        <use xlink:href="/themes/contrib/atomic/node_modules/@yalesites-org/component-library-twig/dist/icons.svg#xmark">
+        </use>
+       </svg>
+      </button>
+     </div>
+    </section>
+   </div>
+   <header class="site-header" data-component-width="site" data-header-accent="four" data-header-theme="two" data-main-menu-state="loaded" data-site-header-border-thickness="8" data-site-header-nav-position="left">
+    <div class="site-header__inner">
+     <div class="site-header__mobile-header">
+      <a class="site-header__site-branding site-header__site-branding--mobile" data-link-style="underline" data-link-type="internal" href="/">
+       Department of Chemistry
+      </
+No faculty content found. Body start:
+<body class="ys-content-type-page" data-font-pairing="yalenew">
+ <a class="link-skip__link visually-hidden focusable ys-content-type-page" data-font-pairing="yalenew" href="#main-content">
+  Skip to main content
+ </a>
+ <div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas="">
+  <div class="layout-container" data-global-theme="two">
+   <div id="block-alert-block">
+    <section aria-label="announcement" class="alert" data-alert-id="ys-alert-id-1767374746" data-alert-state="expanded" data-alert-type="marketing" data-component-width="site">
+     <div class="alert__inner">
+      <div class="alert__content">
+       <div class="alert__content-inner">
+        <h2 class="alert__heading">
+         Job openings &amp; Holiday closing
+        </h2>
+        <div class="alert__text">
+         We are hiring Assistant Professors in Chemical Biology, Energy Sciences, Physical, or Theoretical Chemistry. The Glass Shop is closed and will reopen on 1/8.
+        </div>
+       </div>
+       <a class="alert__link" data-link-style="underline" data-link-type="internal" href="/about/job-openings">
+        Apply here!
+       </a>
+      </div>
+      <button class="alert__toggle">
+       <span class="visually-hidden">
+        Close alert
+       </span>
+       <svg aria-hidden="true" class="icon" role="img">
+        <use xlink:href="/themes/contrib/atomic/node_modules/@yalesites-org/component-library-twig/dist/icons.svg#xmark">
+        </use>
+       </svg>
+      </button>
+     </div>
+    </section>
+   </div>
+   <header class="site-header" data-component-width="site" data-header-accent="four" data-header-theme="two" data-main-menu-state="loaded" data-site-header-border-thickness="8" data-site-header-nav-position="left">
+    <div class="site-header__inner">
+     <div class="site-header__mobile-header">
+      <a class="site-header__site-branding site-header__site-branding--mobile" data-link-style="underline" data-link-type="internal" href="/">
+       Department of Chemistry
+      </

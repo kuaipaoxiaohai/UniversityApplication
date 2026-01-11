@@ -1,0 +1,56 @@
+2026-01-04 19:05:43,790 - INFO - Loaded 314 existing faculty entries.
+2026-01-04 19:05:43,790 - INFO - ============================================================
+2026-01-04 19:05:43,791 - INFO - Academic Faculty Data Crawler
+2026-01-04 19:05:43,791 - INFO - ============================================================
+2026-01-04 19:05:43,791 - INFO - ==================================================
+2026-01-04 19:05:43,791 - INFO - Starting Stage 1: Faculty Manifest Generation
+2026-01-04 19:05:43,791 - INFO - ==================================================
+2026-01-04 19:05:43,791 - INFO - Scraping Stanford Chemical Engineering faculty list...
+2026-01-04 19:05:45,872 - INFO - Found 32 faculty from Stanford Chemical Engineering
+2026-01-04 19:05:45,872 - INFO - Scraping Stanford Materials Science & Engineering faculty list...
+2026-01-04 19:05:47,912 - INFO - Found 42 faculty from Stanford Materials Science & Engineering
+2026-01-04 19:05:47,912 - INFO - Scraping Stanford Doerr School faculty list...
+2026-01-04 19:05:50,165 - INFO - Found 159 faculty from Doerr School
+2026-01-04 19:05:50,165 - INFO - Scraping MIT DMSE faculty list...
+2026-01-04 19:05:54,883 - INFO - Found 56 faculty from MIT DMSE
+2026-01-04 19:05:54,884 - INFO - Scraping Harvard Chemistry faculty list...
+2026-01-04 19:05:58,444 - INFO - Found 2 faculty from Harvard Chemistry
+2026-01-04 19:05:58,444 - INFO - Scraping Harvard SEAS faculty list...
+2026-01-04 19:06:00,906 - INFO - Found 0 faculty from Harvard SEAS
+2026-01-04 19:06:00,906 - INFO - Scraping Yale Chemistry faculty list...
+2026-01-04 19:06:02,464 - INFO - Found 5 faculty from Yale Chemistry
+2026-01-04 19:06:02,464 - INFO - Scraping Princeton Chemistry faculty list...
+2026-01-04 19:06:05,332 - INFO - Found 55 faculty from Princeton Chemistry
+2026-01-04 19:06:05,332 - INFO - Scraping UChicago Chemistry faculty list...
+2026-01-04 19:06:07,250 - INFO - UChicago: specific classes not found, using text search fallback.
+2026-01-04 19:06:07,251 - INFO - Found 0 faculty from UChicago Chemistry
+2026-01-04 19:06:07,251 - INFO - Scraping Northwestern Chemistry faculty list...
+2026-01-04 19:06:10,557 - INFO - Found 0 faculty from Northwestern Chemistry
+2026-01-04 19:06:10,557 - INFO - Scraping Northwestern Materials Science faculty list...
+2026-01-04 19:06:14,233 - INFO - Found 27 faculty from Northwestern Materials Science
+2026-01-04 19:06:14,233 - INFO - Scraping UC Berkeley Chemistry faculty list...
+2026-01-04 19:06:16,599 - INFO - Found 20 faculty from UC Berkeley Chemistry
+2026-01-04 19:06:16,599 - INFO - Scraping UC Berkeley Chemical & Biomolecular Engineering faculty list...
+2026-01-04 19:06:19,562 - INFO - Found 20 faculty from UC Berkeley Chemical & Biomolecular Engineering
+2026-01-04 19:06:19,562 - INFO - Scraping Caltech Chemistry & Chemical Engineering faculty list...
+2026-01-04 19:06:21,538 - ERROR - Error fetching https://www.cce.caltech.edu/content/faculty: 404 Client Error: Not Found for url: https://www.cce.caltech.edu/content/faculty
+2026-01-04 19:06:21,538 - INFO - Scraping Caltech Materials Science faculty list...
+2026-01-04 19:06:30,618 - INFO - Found 231 faculty from Caltech Materials Science
+2026-01-04 19:06:30,618 - INFO - Stage 1 complete: Found 649 total faculty entries
+2026-01-04 19:06:30,619 - INFO - After filtering: 409 faculty with valid professor titles and names
+2026-01-04 19:06:30,619 - INFO - ==================================================
+2026-01-04 19:06:30,619 - INFO - Starting Stage 2: Deep Profile Scraping
+2026-01-04 19:06:30,619 - INFO - ==================================================
+2026-01-04 19:06:30,619 - INFO - Scraping profile 1/409: Zhenan Bao
+/Users/longzixuan/Documents/Program/UniversityApplication/crawler.py:1383: DeprecationWarning: The 'text' argument to find()-type methods is deprecated. Use 'string' instead.
+  admin_section = soup.find(text=re.compile(r'administrative\s*contact|assistant|coordinator', re.I))
+2026-01-04 19:06:40,092 - INFO - Scraping profile 2/409: Stacey Bent
+2026-01-04 19:06:47,552 - INFO - Scraping profile 3/409: Joseph M. DeSimone
+/Users/longzixuan/Documents/Program/UniversityApplication/crawler.py:1353: DeprecationWarning: The 'text' argument to find()-type methods is deprecated. Use 'string' instead.
+  pub_section = soup.find(['h2', 'h3'], text=re.compile(r'publication|paper|research', re.I))
+2026-01-04 19:06:53,528 - INFO - Scraping profile 4/409: Alexander Dunn
+2026-01-04 19:07:00,918 - INFO - Scraping profile 5/409: Gerald Fuller
+2026-01-04 19:07:08,064 - INFO - Scraping profile 6/409: Thomas Jaramillo
+2026-01-04 19:07:15,421 - INFO - Scraping profile 7/409: Chaitan Khosla
+2026-01-04 19:07:23,593 - INFO - Scraping profile 8/409: Eric S.G. Shaqfeh
+2026-01-04 19:07:31,577 - INFO - Scraping profile 9/409: Andrew Spakowitz

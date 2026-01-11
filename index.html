@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faculty Directory - Stanford & MIT</title>
+    <title>Faculty Directory - Summer Research 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -189,6 +189,8 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .faculty-card:hover {
@@ -255,6 +257,45 @@
             color: #f472b6;
         }
 
+        .school-harvard-chemistry,
+        .school-harvard-seas {
+            background: rgba(165, 42, 42, 0.2);
+            color: #fca5a5;
+        }
+
+        .school-yale-chemistry {
+            background: rgba(0, 53, 107, 0.2);
+            color: #93c5fd;
+        }
+
+        .school-princeton-chemistry {
+            background: rgba(255, 103, 31, 0.2);
+            color: #fdba74;
+        }
+
+        .school-uchicago-chemistry {
+            background: rgba(128, 0, 0, 0.2);
+            color: #fca5a5;
+        }
+
+        .school-northwestern-chemistry,
+        .school-northwestern-mse {
+            background: rgba(78, 42, 132, 0.2);
+            color: #c4b5fd;
+        }
+
+        .school-berkeley-chemistry,
+        .school-berkeley-cbe {
+            background: rgba(0, 50, 98, 0.2);
+            color: #fcd34d;
+        }
+
+        .school-caltech-cce,
+        .school-caltech-materials {
+            background: rgba(255, 108, 47, 0.2);
+            color: #fed7aa;
+        }
+
         .contact-info {
             display: flex;
             flex-direction: column;
@@ -317,6 +358,229 @@
             border: 1px solid rgba(99, 102, 241, 0.3);
         }
 
+        /* Email Button Section */
+        .card-actions {
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .email-btn {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border: none;
+            border-radius: 0.5rem;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .email-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .profile-btn {
+            padding: 0.75rem 1rem;
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-btn:hover {
+            border-color: var(--primary);
+            color: var(--text);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--surface);
+            border-radius: 1rem;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: sticky;
+            top: 0;
+            background: var(--surface);
+            z-index: 10;
+        }
+
+        .modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .modal-header .email-to {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .close-btn {
+            background: var(--surface-light);
+            border: none;
+            color: var(--text);
+            width: 36px;
+            height: 36px;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .close-btn:hover {
+            background: var(--primary);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .email-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .email-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .email-subject {
+            background: var(--background);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .email-content {
+            background: var(--background);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            color: var(--text);
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .modal-btn {
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .modal-btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .modal-btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .modal-btn-secondary:hover {
+            background: var(--surface-light);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--secondary);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
         /* Loading */
         .loading {
             text-align: center;
@@ -376,14 +640,28 @@
                 width: 100%;
                 text-align: center;
             }
+
+            .modal {
+                margin: 0.5rem;
+                max-height: 95vh;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+            }
+
+            .modal-btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 
 <body>
     <header class="header">
-        <h1>🎓 Faculty Directory</h1>
-        <p>Top Universities - Chemical Engineering, Materials Science, Chemistry, Sustainability</p>
+        <h1>🎓 Faculty Directory - Summer Research 2026</h1>
+        <p>Personalized Cold Emails for Alex (Hung Yu Zhu) - BASIS International School Guangzhou</p>
     </header>
 
     <div class="stats-bar" id="statsBar">
@@ -434,29 +712,61 @@
         </div>
     </main>
 
+    <!-- Email Modal -->
+    <div class="modal-overlay" id="emailModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div>
+                    <h3 id="modalTitle">Email Draft</h3>
+                    <div class="email-to" id="modalEmailTo"></div>
+                </div>
+                <button class="close-btn" onclick="closeEmailModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="email-section">
+                    <div class="email-label">Subject Line</div>
+                    <div class="email-subject" id="emailSubject"></div>
+                </div>
+                <div class="email-section">
+                    <div class="email-label">Email Body</div>
+                    <div class="email-content" id="emailBody"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" onclick="copyEmail()">📋 Copy Email</button>
+                <a class="modal-btn modal-btn-primary" id="mailtoLink" href="#">✉️ Open in Email Client</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">✓ Email copied to clipboard!</div>
+
     <script>
         let facultyData = [];
         let currentFilter = 'all';
         let currentSearch = '';
+        let currentEmailData = null;
 
         // Determine school from department source
         function getSchool(source) {
             if (!source) return 'unknown';
-            if (source.includes('cheme.stanford')) return 'stanford-cheme';
-            if (source.includes('mse.stanford')) return 'stanford-mse';
-            if (source.includes('sustainability.stanford')) return 'stanford-doerr';
-            if (source.includes('mit.edu')) return 'mit-dmse';
-            if (source.includes('chemistry.harvard')) return 'harvard-chemistry';
-            if (source.includes('seas.harvard')) return 'harvard-seas';
-            if (source.includes('yale.edu') && source.includes('chem')) return 'yale-chemistry';
-            if (source.includes('chemistry.princeton')) return 'princeton-chemistry';
-            if (source.includes('chemistry.uchicago')) return 'uchicago-chemistry';
-            if (source.includes('chemistry.northwestern')) return 'northwestern-chemistry';
-            if (source.includes('matsci.northwestern')) return 'northwestern-mse';
-            if (source.includes('chemistry.berkeley')) return 'berkeley-chemistry';
-            if (source.includes('berkeley') && source.includes('cbe')) return 'berkeley-cbe';
-            if (source.includes('cce.caltech')) return 'caltech-cce';
-            if (source.includes('cms.caltech')) return 'caltech-materials';
+            const s = source.toLowerCase();
+            if (s.includes('cheme.stanford')) return 'stanford-cheme';
+            if (s.includes('mse.stanford')) return 'stanford-mse';
+            if (s.includes('sustainability.stanford')) return 'stanford-doerr';
+            if (s.includes('dmse.mit') || s.includes('mit.edu')) return 'mit-dmse';
+            if (s.includes('chemistry.harvard')) return 'harvard-chemistry';
+            if (s.includes('seas.harvard')) return 'harvard-seas';
+            if (s.includes('chem') && s.includes('yale')) return 'yale-chemistry';
+            if (s.includes('chemistry.princeton')) return 'princeton-chemistry';
+            if (s.includes('chemistry.uchicago')) return 'uchicago-chemistry';
+            if (s.includes('chemistry.northwestern')) return 'northwestern-chemistry';
+            if (s.includes('mccormick.northwestern') || s.includes('materials-science') && s.includes('northwestern')) return 'northwestern-mse';
+            if (s.includes('chemistry.berkeley')) return 'berkeley-chemistry';
+            if (s.includes('cbe') && s.includes('berkeley')) return 'berkeley-cbe';
+            if (s.includes('cce.caltech')) return 'caltech-cce';
+            if (s.includes('cms.caltech') || s.includes('materials') && s.includes('caltech')) return 'caltech-materials';
             return 'unknown';
         }
 
@@ -481,195 +791,170 @@
             return labels[school] || 'Unknown';
         }
 
-        // Research field translation mapping (English to Chinese)
+        function getUniversityName(school) {
+            if (school.includes('stanford')) return 'Stanford University';
+            if (school.includes('mit')) return 'MIT';
+            if (school.includes('harvard')) return 'Harvard University';
+            if (school.includes('yale')) return 'Yale University';
+            if (school.includes('princeton')) return 'Princeton University';
+            if (school.includes('uchicago')) return 'University of Chicago';
+            if (school.includes('northwestern')) return 'Northwestern University';
+            if (school.includes('berkeley')) return 'UC Berkeley';
+            if (school.includes('caltech')) return 'Caltech';
+            return 'the university';
+        }
+
+        function getDepartmentName(school) {
+            const depts = {
+                'stanford-cheme': 'Chemical Engineering',
+                'stanford-mse': 'Materials Science and Engineering',
+                'stanford-doerr': 'Stanford Doerr School of Sustainability',
+                'mit-dmse': 'Materials Science and Engineering (DMSE)',
+                'harvard-chemistry': 'Department of Chemistry and Chemical Biology',
+                'harvard-seas': 'School of Engineering and Applied Sciences',
+                'yale-chemistry': 'Department of Chemistry',
+                'princeton-chemistry': 'Department of Chemistry',
+                'uchicago-chemistry': 'Department of Chemistry',
+                'northwestern-chemistry': 'Department of Chemistry',
+                'northwestern-mse': 'Materials Science and Engineering',
+                'berkeley-chemistry': 'Department of Chemistry',
+                'berkeley-cbe': 'Chemical and Biomolecular Engineering',
+                'caltech-cce': 'Division of Chemistry and Chemical Engineering',
+                'caltech-materials': 'Division of Engineering and Applied Science'
+            };
+            return depts[school] || 'the department';
+        }
+
+        // Research field translation mapping
         const researchTranslations = {
-            // Materials Science
-            'materials science': '材料科学',
-            'materials': '材料',
-            'nanomaterials': '纳米材料',
-            'biomaterials': '生物材料',
-            'polymers': '聚合物',
-            'polymer': '聚合物',
-            'ceramics': '陶瓷',
-            'metals': '金属材料',
-            'composites': '复合材料',
-            'semiconductors': '半导体',
-            'thin films': '薄膜',
-            'crystals': '晶体',
-            'crystallography': '晶体学',
-            'metallurgy': '冶金学',
-
-            // Chemistry & ChemE
-            'chemical engineering': '化学工程',
-            'chemistry': '化学',
-            'catalysis': '催化',
-            'catalyst': '催化剂',
-            'electrochemistry': '电化学',
-            'organic chemistry': '有机化学',
-            'inorganic chemistry': '无机化学',
-            'physical chemistry': '物理化学',
-            'biochemistry': '生物化学',
-            'polymer chemistry': '高分子化学',
-            'surface chemistry': '表面化学',
-            'thermodynamics': '热力学',
-            'kinetics': '动力学',
-            'synthesis': '合成',
-            'spectroscopy': '光谱学',
-
-            // Energy
-            'energy': '能源',
-            'renewable energy': '可再生能源',
-            'solar energy': '太阳能',
-            'solar cells': '太阳能电池',
-            'batteries': '电池',
-            'battery': '电池',
-            'fuel cells': '燃料电池',
-            'hydrogen': '氢能',
-            'energy storage': '储能',
-            'photovoltaics': '光伏',
-            'clean energy': '清洁能源',
-
-            // Sustainability & Environment
-            'sustainability': '可持续发展',
-            'environment': '环境',
-            'environmental': '环境',
-            'climate': '气候',
-            'climate change': '气候变化',
-            'carbon': '碳',
-            'carbon capture': '碳捕获',
-            'water': '水资源',
-            'pollution': '污染',
-            'ecology': '生态学',
-            'ecosystem': '生态系统',
-            'conservation': '保护',
-            'biodiversity': '生物多样性',
-
-            // Physics & Engineering
-            'physics': '物理',
-            'optics': '光学',
-            'photonics': '光子学',
-            'electronics': '电子学',
-            'mechanical': '机械',
-            'thermal': '热学',
-            'fluid mechanics': '流体力学',
-            'transport': '传输',
-            'mechanics': '力学',
-            'dynamics': '动力学',
-
-            // Biology & Medicine
-            'biology': '生物学',
-            'bioengineering': '生物工程',
-            'biotechnology': '生物技术',
-            'drug delivery': '药物递送',
-            'tissue engineering': '组织工程',
-            'medical devices': '医疗器械',
-            'biophysics': '生物物理',
-            'protein': '蛋白质',
-            'cell': '细胞',
-            'molecular': '分子',
-
-            // Computation & Data
-            'computational': '计算',
-            'machine learning': '机器学习',
-            'artificial intelligence': 'AI',
-            'simulation': '模拟',
-            'modeling': '建模',
-            'data science': '数据科学',
-
-            // Other
-            'nanotechnology': '纳米技术',
-            'manufacturing': '制造',
-            'processing': '加工',
-            'characterization': '表征',
-            'microscopy': '显微技术',
-            'imaging': '成像',
-            'design': '设计',
-            'innovation': '创新',
-            'research': '研究'
+            'materials science': '材料科学', 'materials': '材料', 'nanomaterials': '纳米材料',
+            'biomaterials': '生物材料', 'polymers': '聚合物', 'polymer': '聚合物',
+            'ceramics': '陶瓷', 'metals': '金属材料', 'composites': '复合材料',
+            'semiconductors': '半导体', 'thin films': '薄膜', 'crystals': '晶体',
+            'chemical engineering': '化学工程', 'chemistry': '化学', 'catalysis': '催化',
+            'electrochemistry': '电化学', 'organic chemistry': '有机化学',
+            'synthesis': '合成', 'energy': '能源', 'renewable energy': '可再生能源',
+            'solar energy': '太阳能', 'batteries': '电池', 'fuel cells': '燃料电池',
+            'hydrogen': '氢能', 'energy storage': '储能', 'sustainability': '可持续发展',
+            'climate': '气候', 'carbon capture': '碳捕获', 'water': '水资源',
+            'machine learning': '机器学习', 'computational': '计算', 'simulation': '模拟',
+            'nanotechnology': '纳米技术', 'manufacturing': '制造'
         };
 
-        // Translate research field to Chinese
         function translateToChineseTag(text) {
             if (!text) return '';
             const lowerText = text.toLowerCase().trim();
-
-            // Direct match
-            if (researchTranslations[lowerText]) {
-                return researchTranslations[lowerText];
-            }
-
-            // Partial match - look for keywords in the text
+            if (researchTranslations[lowerText]) return researchTranslations[lowerText];
             for (const [eng, chi] of Object.entries(researchTranslations)) {
-                if (lowerText.includes(eng) || eng.includes(lowerText)) {
-                    return chi;
-                }
+                if (lowerText.includes(eng) || eng.includes(lowerText)) return chi;
             }
-
-            // No translation found, return original (truncated if too long)
             return text.length > 20 ? text.substring(0, 18) + '...' : text;
         }
 
-        // Extract research keywords from text (like publication titles)
         function extractKeywordsFromText(text) {
             if (!text) return [];
             const lowerText = text.toLowerCase();
             const found = new Set();
-
-            // Keyword to Chinese translation mapping
             const keywordMap = {
-                // Materials
                 'nanomaterial': '纳米材料', 'nanoparticle': '纳米材料', 'nano': '纳米技术',
                 'polymer': '聚合物', 'biomaterial': '生物材料', 'semiconductor': '半导体',
                 'thin film': '薄膜', 'crystal': '晶体', 'alloy': '合金', 'ceramic': '陶瓷',
-                'graphene': '石墨烯', 'carbon nanotube': '碳纳米管', 'quantum dot': '量子点',
-                // Chemistry
-                'catalysis': '催化', 'catalyst': '催化', 'electrochemical': '电化学',
-                'photochemical': '光化学', 'synthesis': '合成', 'molecular': '分子科学',
-                'organic': '有机化学', 'inorganic': '无机化学', 'polymer chemistry': '高分子化学',
-                // Energy
-                'solar': '太阳能', 'battery': '电池', 'fuel cell': '燃料电池',
-                'photovoltaic': '光伏', 'energy storage': '储能', 'hydrogen': '氢能',
-                'renewable': '可再生能源', 'lithium': '锂电池', 'perovskite': '钙钛矿',
-                // Environment
+                'graphene': '石墨烯', 'catalysis': '催化', 'catalyst': '催化',
+                'electrochemical': '电化学', 'solar': '太阳能', 'battery': '电池',
+                'fuel cell': '燃料电池', 'photovoltaic': '光伏', 'energy storage': '储能',
+                'hydrogen': '氢能', 'renewable': '可再生能源', 'lithium': '锂电池',
                 'climate': '气候', 'carbon capture': '碳捕获', 'sustainability': '可持续发展',
-                'environmental': '环境', 'pollution': '污染治理', 'water treatment': '水处理',
-                'ecosystem': '生态系统', 'biodiversity': '生物多样性',
-                // Biology
-                'drug delivery': '药物递送', 'tissue': '组织工程', 'protein': '蛋白质',
-                'cell': '细胞', 'gene': '基因', 'biomedical': '生物医学', 'dna': 'DNA',
-                // Physics/Engineering
-                'optic': '光学', 'photonic': '光子学', 'electronic': '电子学',
-                'magnetic': '磁性材料', 'thermal': '热学', 'mechanical': '力学',
-                'transport': '传输', 'superconductor': '超导', 'ferroelectric': '铁电',
-                // Methods
-                'machine learning': '机器学习', 'computational': '计算模拟',
-                'simulation': '模拟', 'microscopy': '显微技术', 'spectroscopy': '光谱学',
-                'imaging': '成像技术', 'characterization': '表征'
+                'drug delivery': '药物递送', 'protein': '蛋白质', 'biomedical': '生物医学',
+                'machine learning': '机器学习', 'computational': '计算模拟'
             };
-
             for (const [key, chinese] of Object.entries(keywordMap)) {
                 if (lowerText.includes(key) && !found.has(chinese)) {
                     found.add(chinese);
                     if (found.size >= 4) break;
                 }
             }
-
             return Array.from(found);
         }
 
-        // Get default research areas based on school/department
-        function getDefaultResearchAreas(school, title) {
+        function getDefaultResearchAreas(school) {
             const defaults = {
                 'stanford-cheme': ['化学工程', '材料科学', '催化', '能源'],
                 'stanford-mse': ['材料科学', '纳米材料', '电子材料', '力学'],
                 'stanford-doerr': ['可持续发展', '气候科学', '环境工程', '能源'],
-                'mit-dmse': ['材料科学', '纳米技术', '能源材料', '生物材料']
+                'mit-dmse': ['材料科学', '纳米技术', '能源材料', '生物材料'],
+                'harvard-chemistry': ['有机化学', '无机化学', '物理化学', '生物化学'],
+                'harvard-seas': ['应用物理', '工程科学', '材料科学', '能源'],
+                'yale-chemistry': ['化学合成', '催化', '材料化学', '生物化学'],
+                'princeton-chemistry': ['化学研究', '材料科学', '催化', '能源'],
+                'uchicago-chemistry': ['化学研究', '材料化学', '物理化学', '催化'],
+                'northwestern-chemistry': ['化学研究', '纳米材料', '催化', '能源'],
+                'northwestern-mse': ['材料科学', '纳米技术', '能源材料', '生物材料'],
+                'berkeley-chemistry': ['化学研究', '材料化学', '催化', '能源'],
+                'berkeley-cbe': ['化学工程', '生物工程', '材料', '能源'],
+                'caltech-cce': ['化学工程', '催化', '材料', '能源'],
+                'caltech-materials': ['材料科学', '应用物理', '纳米技术', '能源']
             };
             return defaults[school] || ['科学研究', '工程技术'];
         }
 
+        // Generate personalized email based on professor data
+        function generateEmail(faculty) {
+            const school = getSchool(faculty.department_source);
+            const universityName = getUniversityName(school);
+            const deptName = getDepartmentName(school);
+            const lastName = faculty.name.split(',')[0].split(' ').pop().replace(/Professor|Dr\.|Prof\./gi, '').trim();
+
+            // Extract research areas
+            let researchAreas = [];
+            if (faculty.research_interests && Array.isArray(faculty.research_interests)) {
+                researchAreas = faculty.research_interests.slice(0, 3);
+            } else if (faculty.top_publications) {
+                const pubs = Array.isArray(faculty.top_publications) ? faculty.top_publications.join(' ') : faculty.top_publications;
+                researchAreas = extractKeywordsFromText(pubs).map(chi => {
+                    for (const [eng, c] of Object.entries(researchTranslations)) {
+                        if (c === chi) return eng;
+                    }
+                    return chi;
+                }).slice(0, 3);
+            }
+
+            // Build research interest sentence
+            let researchSentence = '';
+            if (researchAreas.length > 0) {
+                const areas = researchAreas.join(', ').toLowerCase();
+                researchSentence = `Your research on ${areas} deeply resonates with my academic interests and research background.`;
+            } else {
+                researchSentence = `Your pioneering contributions to ${deptName} deeply resonate with my academic interests and research background.`;
+            }
+
+            const subject = `Prospective Student Inquiry: Summer Research Opportunity in ${universityName}`;
+
+            const body = `Dear Professor ${lastName},
+
+I hope this email finds you well. My name is Alex (Hung Yu Zhu), and I am an eleventh-grade student at BASIS International School Guangzhou in China. I am writing to inquire about the possibility of joining your research group as a summer research assistant (unpaid) in 2026.
+
+${researchSentence} Having reviewed your work and publications, I am particularly fascinated by how your group advances fundamental understanding while addressing real-world challenges.
+
+Since ninth grade, I have been conducting research at the Key Laboratory of Low-carbon Chemistry & Energy Conservation of Guangdong Province at Sun Yat-sen University. There, I contributed to the development of poly(methyl ethylene carbonate-phthalate) (PPC-P), a novel fully biodegradable plastic synthesized from CO₂. My work specifically focused on the synthesis of CO₂-based polycarbonate diols and extended to 4D printing materials research. This hands-on experience has given me a strong foundation in polymer chemistry, experimental design, and materials characterization.
+
+Academically, I maintain a 4.0 GPA, scored 1570 on the SAT (800 Math), and achieved 115 on TOEFL. I completed AP Chemistry with a perfect score of 5 in ninth grade, qualified for the Canadian Chemistry Olympiad (CCO) through CCC, and advanced to AIME through AMC 12.
+
+I would be deeply grateful for the opportunity to contribute to your research in any capacity—whether through data analysis, literature review, or hands-on experimental work. I am flexible regarding format (virtual or in-person).
+
+Would you be open to a brief Zoom conversation to discuss potential opportunities? Alternatively, I would greatly appreciate being connected with a graduate student in your group who could offer guidance.
+
+Thank you for your time and consideration. I have attached my CV for your reference.
+
+Best regards,
+Alex (Hung Yu Zhu)
+BASIS International School Guangzhou
+Grade 11`;
+
+            return { subject, body, email: faculty.email };
+        }
+
         // Create faculty card HTML
-        function createCard(faculty) {
+        function createCard(faculty, index) {
             const school = getSchool(faculty.department_source);
             const schoolLabel = getSchoolLabel(school);
 
@@ -688,13 +973,6 @@
                         <a href="tel:${faculty.phone}">${faculty.phone}</a>
                     </div>`;
             }
-            if (faculty.assistant_email) {
-                contactHtml += `
-                    <div class="contact-item">
-                        <span class="contact-icon">👤</span>
-                        <span>Assistant: <a href="mailto:${faculty.assistant_email}">${faculty.assistant_email}</a></span>
-                    </div>`;
-            }
             if (faculty.lab_website) {
                 const labUrl = faculty.lab_website.startsWith('http') ? faculty.lab_website : 'https://' + faculty.lab_website;
                 contactHtml += `
@@ -710,35 +988,18 @@
                         <a href="${faculty.google_scholar}" target="_blank">Google Scholar</a>
                     </div>`;
             }
-            if (faculty.profile_url) {
-                contactHtml += `
-                    <div class="contact-item">
-                        <span class="contact-icon">🔗</span>
-                        <a href="${faculty.profile_url}" target="_blank">Profile Page</a>
-                    </div>`;
-            }
 
             let researchHtml = '';
-            // Extract research interests from multiple sources
             let interests = [];
-
-            // First try: use research_interests from data
             if (faculty.research_interests && Array.isArray(faculty.research_interests) && faculty.research_interests.length > 0) {
                 interests = faculty.research_interests.map(i => translateToChineseTag(i));
             }
-
-            // Second try: extract keywords from publications
             if (interests.length === 0 && faculty.top_publications && faculty.top_publications.length > 0) {
-                const pubs = Array.isArray(faculty.top_publications)
-                    ? faculty.top_publications.join(' ')
-                    : faculty.top_publications;
+                const pubs = Array.isArray(faculty.top_publications) ? faculty.top_publications.join(' ') : faculty.top_publications;
                 interests = extractKeywordsFromText(pubs);
             }
-
-            // Third try: infer from department/school
             if (interests.length === 0) {
-                const school = getSchool(faculty.department_source);
-                interests = getDefaultResearchAreas(school, faculty.title);
+                interests = getDefaultResearchAreas(school);
             }
 
             if (interests.length > 0) {
@@ -751,15 +1012,69 @@
                     </div>`;
             }
 
+            // Email button (only show if professor has email)
+            let actionsHtml = '';
+            if (faculty.email) {
+                actionsHtml = `
+                    <div class="card-actions">
+                        <button class="email-btn" onclick="openEmailModal(${index})">📝 View Email Draft</button>
+                        ${faculty.profile_url ? `<a class="profile-btn" href="${faculty.profile_url}" target="_blank">🔗</a>` : ''}
+                    </div>`;
+            } else if (faculty.profile_url) {
+                actionsHtml = `
+                    <div class="card-actions">
+                        <a class="profile-btn" href="${faculty.profile_url}" target="_blank" style="flex:1;">🔗 Profile Page</a>
+                    </div>`;
+            }
+
             return `
-                <article class="faculty-card" data-school="${school}">
+                <article class="faculty-card" data-school="${school}" data-index="${index}">
                     <h3 class="faculty-name">${faculty.name || 'Unknown'}</h3>
                     <div class="faculty-title">${faculty.title || ''}</div>
                     <span class="faculty-school school-${school}">${schoolLabel}</span>
                     ${contactHtml ? `<div class="contact-info">${contactHtml}</div>` : ''}
                     ${researchHtml}
+                    ${actionsHtml}
                 </article>
             `;
+        }
+
+        // Open email modal
+        function openEmailModal(index) {
+            const faculty = facultyData[index];
+            if (!faculty || !faculty.email) return;
+
+            currentEmailData = generateEmail(faculty);
+            const lastName = faculty.name.split(',')[0].split(' ').pop().replace(/Professor|Dr\.|Prof\./gi, '').trim();
+
+            document.getElementById('modalTitle').textContent = `Email to Prof. ${lastName}`;
+            document.getElementById('modalEmailTo').textContent = `To: ${faculty.email}`;
+            document.getElementById('emailSubject').textContent = currentEmailData.subject;
+            document.getElementById('emailBody').textContent = currentEmailData.body;
+
+            const mailtoLink = document.getElementById('mailtoLink');
+            mailtoLink.href = `mailto:${faculty.email}?subject=${encodeURIComponent(currentEmailData.subject)}&body=${encodeURIComponent(currentEmailData.body)}`;
+
+            document.getElementById('emailModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close email modal
+        function closeEmailModal() {
+            document.getElementById('emailModal').classList.remove('active');
+            document.body.style.overflow = '';
+            currentEmailData = null;
+        }
+
+        // Copy email to clipboard
+        function copyEmail() {
+            if (!currentEmailData) return;
+            const fullEmail = `Subject: ${currentEmailData.subject}\n\n${currentEmailData.body}`;
+            navigator.clipboard.writeText(fullEmail).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            });
         }
 
         // Render faculty cards
@@ -767,19 +1082,15 @@
             const grid = document.getElementById('facultyGrid');
 
             let filtered = facultyData.filter(f => {
-                // Filter by school
                 if (currentFilter !== 'all') {
                     const school = getSchool(f.department_source);
                     if (school !== currentFilter) return false;
                 }
-
-                // Filter by search
                 if (currentSearch) {
                     const searchLower = currentSearch.toLowerCase();
-                    const text = `${f.name} ${f.title} ${f.email} ${f.department_source}`.toLowerCase();
+                    const text = `${f.name} ${f.title} ${f.email} ${f.department_source} ${f.research_interests || ''}`.toLowerCase();
                     if (!text.includes(searchLower)) return false;
                 }
-
                 return true;
             });
 
@@ -788,7 +1099,10 @@
                 return;
             }
 
-            grid.innerHTML = filtered.map(createCard).join('');
+            grid.innerHTML = filtered.map((f, i) => {
+                const originalIndex = facultyData.indexOf(f);
+                return createCard(f, originalIndex);
+            }).join('');
         }
 
         // Update stats
@@ -830,6 +1144,16 @@
                 currentFilter = btn.dataset.filter;
                 renderFaculty();
             });
+        });
+
+        // Close modal on overlay click
+        document.getElementById('emailModal').addEventListener('click', (e) => {
+            if (e.target.id === 'emailModal') closeEmailModal();
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeEmailModal();
         });
 
         // Initialize
